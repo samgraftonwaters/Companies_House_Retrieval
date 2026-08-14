@@ -157,7 +157,7 @@ def pulling_charge_data(iterative_range : int, company_house_numbers : list, url
 
     return(df)
 
-def get_transactions_data(iterative_range : int, charges_df, url : str, api_key : str):
+def pulling_transactions_data(iterative_range : int, charges_df, url : str, api_key : str):
 
     required_columns = ['type', 'date', 'category', 'subcategory',
        'description', 'action_date', 'description_values_charge_number']
@@ -242,7 +242,7 @@ def pulling_additional_data(iterative_range : int, data_table, link_col_name : s
 
     return(df)
 
-def get_insolvency_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
+def pulling_insolvency_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
 
     insolvency_dates = []
     insolvency_prac = []

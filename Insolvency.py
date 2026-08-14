@@ -3,9 +3,11 @@ import pandas as pd
 import numpy as np
 import time
 
+import Call_API_Functions as CAF
+
 def get_insolvency_data(companies, url, api_key, save_file = False):
 
-    insolvency_dates, insolvency_practitioners = get_insolvency_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
+    insolvency_dates, insolvency_practitioners = CAF.pulling_insolvency_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
 
     number_insolvencies = insolvency_dates.groupby(['Company Number'])['Insolvency Number'].max().reset_index(name = 'Total Number Insolvencies')
     number_insolvencies.columns = ['Companies House Number', 'Total Number Insolvencies']

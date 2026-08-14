@@ -18,7 +18,7 @@ def get_charges_data(companies, url, api_key, save_file = False):
 
 def get_transactions_data(charges, save_file = False):
 
-    transactions = get_transactions_data(iterative_range = len(charges), charges_df = charges)
+    transactions = CAF.pulling_transactions_data(iterative_range = len(charges), charges_df = charges)
 
     print(transactions.head(5))
     if save_file == True:
