@@ -5,7 +5,7 @@ import time
 
 import API_Functions as APIF
 
-def pulling_overview_data(iterative_range : int, company_data, number_col_name : str, url : str, api_key : str):
+def pulling_overview_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
     
     required_columns = ['company_name', 'company_number', 'company_status', 'company_status_detail', 'date_of_creation', 'has_charges', 
                     'has_insolvency_history', 'registered_office_is_in_dispute', 'accounts_last_accounts_period_end_on', 
@@ -18,7 +18,7 @@ def pulling_overview_data(iterative_range : int, company_data, number_col_name :
     
     for i in range(iterative_range):
     
-        output = APIF.call_api(url = url, api_key = api_key, company_number = company_data[number_col_name][i], company_info = '')
+        output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '')
     
         if output is None:
             continue
@@ -40,7 +40,7 @@ def pulling_overview_data(iterative_range : int, company_data, number_col_name :
     return(df)
 
 
-def pulling_people_data(iterative_range : int, company_data, number_col_name : str, url : str, api_key : str):
+def pulling_people_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
 
     required_columns = ['appointed_on', 'is_pre_1992_appointment', 'name', 'officer_role', 'person_number', 'address_address_line_1', 
                         'address_address_line_2', 'address_locality', 'address_postal_code', 
@@ -51,7 +51,7 @@ def pulling_people_data(iterative_range : int, company_data, number_col_name : s
     
     for i in range(iterative_range):
     
-        output = APIF.call_api(url = url, api_key = api_key, company_number = company_data[number_col_name][i], company_info = '/officers')
+        output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/officers')
     
         if output is None:
             continue
@@ -65,7 +65,7 @@ def pulling_people_data(iterative_range : int, company_data, number_col_name : s
 
             items_df['Resigned'] = np.where(items_df['resigned_on'].isna() == True, False, True)
             items_df['Active'] = np.where(items_df['resigned_on'].isna() == True, True, False)
-            items_df['CompanyNumber'] = company_data[number_col_name][i]
+            items_df['CompanyNumber'] = company_house_numbers[i]
             
             companies.append(items_df)
             
@@ -80,7 +80,7 @@ def pulling_people_data(iterative_range : int, company_data, number_col_name : s
     return(df)
 
 
-def pulling_sig_control_data(iterative_range : int, company_data, number_col_name : str, url : str, api_key : str):
+def pulling_sig_control_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
 
     required_columns = ['notified_on', 'ceased_on', 'name', 'name_elements_forename', 
                         'name_elements_surname', 'address_address_line_1', 'address_address_line_2', 'address_country', 'address_locality', 
@@ -92,7 +92,7 @@ def pulling_sig_control_data(iterative_range : int, company_data, number_col_nam
     
     for i in range(iterative_range):
     
-        output = APIF.call_api(url = url, api_key = api_key, company_number = company_data[number_col_name][i], company_info = '/persons-with-significant-control')
+        output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/persons-with-significant-control')
     
         if output is None:
             continue
@@ -105,7 +105,7 @@ def pulling_sig_control_data(iterative_range : int, company_data, number_col_nam
             items_df = items_df.reindex(columns=required_columns)
 
             # items_df['Active'] = np.where(items_df['ceased_on'].isna() == True, True, False)
-            items_df['CompanyNumber'] = company_data[number_col_name][i]
+            items_df['CompanyNumber'] = company_house_numbers[i]
             
             companies.append(items_df)
             
@@ -121,7 +121,7 @@ def pulling_sig_control_data(iterative_range : int, company_data, number_col_nam
     return(df)
 
 
-def pulling_charge_data(iterative_range : int, company_data, number_col_name : str, url : str, api_key : str):
+def pulling_charge_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
 
     required_columns = ['charge_code', 'charge_number', 'status', 'delivered_on',
                            'created_on', 'persons_entitled', 'transactions', 'classification_type',
@@ -133,7 +133,7 @@ def pulling_charge_data(iterative_range : int, company_data, number_col_name : s
     
     for i in range(iterative_range):
     
-        output = APIF.call_api(url = url, api_key = api_key, company_number = company_data[number_col_name][i], company_info = '/charges')
+        output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/charges')
     
         if output is None:
             continue
@@ -145,7 +145,7 @@ def pulling_charge_data(iterative_range : int, company_data, number_col_name : s
     
             items_df = items_df.reindex(columns=required_columns)
             
-            items_df['CompanyNumber'] = company_data[number_col_name][i]
+            items_df['CompanyNumber'] = company_house_numbers[i]
             
             companies.append(items_df)
             
@@ -195,7 +195,7 @@ def get_transactions_data(iterative_range : int, charges_df, url : str, api_key 
 
     return(df)
 
-def pulling_additional_data(iterative_range : int, company_data, link_col_name : str, url : str, api_key : str):
+def pulling_additional_data(iterative_range : int, data_table, link_col_name : str, url : str, api_key : str):
 
     required_columns = ['appointed_on', 'name', 'is_pre_1992_appointment', 'officer_role',
        'address_address_line_1', 'address_address_line_2', 'address_country',
@@ -214,7 +214,7 @@ def pulling_additional_data(iterative_range : int, company_data, link_col_name :
 
         # print(f"This person is associated with Company Number registered as: {company_data['Company Number'][i]}")
 
-        url = company_data[link_col_name][i]
+        url = data_table[link_col_name][i]
       
         output = APIF.call_additional_details(url = url, api_key = api_key)
     
@@ -242,14 +242,14 @@ def pulling_additional_data(iterative_range : int, company_data, link_col_name :
 
     return(df)
 
-def get_insolvency_data(iterative_range : int, company_data, number_col_name : str, url : str, api_key : str):
+def get_insolvency_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
 
     insolvency_dates = []
     insolvency_prac = []
 
     for i in range(iterative_range):
 
-        company_number = company_data[number_col_name][i]
+        company_number = company_house_numbers[i]
 
         output = APIF.call_api(url = url, api_key = api_key, company_number = company_number, company_info = '/insolvency')
     
