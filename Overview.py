@@ -5,7 +5,7 @@ import time
 
 import Call_API_Functions as CAF
 
-def overview_data(companies, url, api_key, save_file = False):
+def get_overview_data(companies, url, api_key, save_file = False):
 
     overview_full_df = CAF.pulling_overview_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
 

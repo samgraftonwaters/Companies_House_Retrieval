@@ -13,13 +13,13 @@ url = "https://api.company-information.service.gov.uk/company/"
 
 companies = []
 
-def get_company_info():
+def get_company_info(companies, url, api_key):
 
-    Overview.overview_data(companies = companies, url = url, api_key = api_key)
-    
+    Overview.get_overview_data(companies = companies, url = url, api_key = api_key)
+
     officer_data = People.get_officers_data(companies = companies, url = url, api_key = api_key, save_file = False)
     People.get_significant_control_data(companies = companies, url = url, api_key = api_key, save_file = False)
-    People.count_people_per_orgs(people_details_df = officer_data, save_file = False)
+    People.get_count_people_per_orgs(people_details_df = officer_data, save_file = False)
 
 
 if __name__ == '__main__':
