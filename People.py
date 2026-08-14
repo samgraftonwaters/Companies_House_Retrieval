@@ -43,7 +43,7 @@ def get_significant_control_data(companies, url, api_key, save_file = False):
 
     sig_control_df['Surname (Significant Control)'] = sig_control_df['Surname (Significant Control)'].str.upper()
 
-    sig_control_df.head(2)
+    print(sig_control_df.head(5))
 
     if save_file == True:
         sig_control_df.to_csv('Org_Sig_Control_Table.csv', sep = ',', index = False)
