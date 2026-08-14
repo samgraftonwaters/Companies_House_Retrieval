@@ -22,6 +22,6 @@ def get_overview_data(companies, url, api_key, save_file = False):
     print(overview_df.head())
 
     if save_file == True:
-        overview_df.to_csv('Org_Overview_Table.csv', sep = ',', index = False)
+        overview_df.to_csv('Company_Overview_Table.csv', sep = ',', index = False)
 
     return(overview_df)

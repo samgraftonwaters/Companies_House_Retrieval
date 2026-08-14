@@ -21,7 +21,7 @@ def get_officers_data(companies, url, api_key, save_file = False):
     print(people_df.head(5))
 
     if save_file == True:
-        people_df.to_csv('Org_Officers_Table.csv', sep = ',', index = False)
+        people_df.to_csv('Company_Officers_Table.csv', sep = ',', index = False)
 
     return(people_df)
 
@@ -46,7 +46,7 @@ def get_significant_control_data(companies, url, api_key, save_file = False):
     print(sig_control_df.head(5))
 
     if save_file == True:
-        sig_control_df.to_csv('Org_Sig_Control_Table.csv', sep = ',', index = False)
+        sig_control_df.to_csv('Company_Sig_Control_Table.csv', sep = ',', index = False)
 
     return(sig_control_df)
 
@@ -86,6 +86,6 @@ def get_count_people_per_orgs(people_details_df, save_file = False):
     print(people_orgs_count.head(5))
 
     if save_file == True:
-        people_orgs_count.to_csv('Count_Org_People_Assigned.csv', sep = ',', index = False)
+        people_orgs_count.to_csv('Count_Company_People_Assigned.csv', sep = ',', index = False)
 
     return(people_orgs_count)
