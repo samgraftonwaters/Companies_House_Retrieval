@@ -22,16 +22,18 @@ def get_company_info(companies, url, api_key, save_file = False):
     Overview.get_overview_data(companies = companies, url = url, api_key = api_key, save_file = save_file)
 
     officer_data = People.get_officers_data(companies = companies, url = url, api_key = api_key, save_file = save_file)
+    print(officer_data.columns)
     People.get_significant_control_data(companies = companies, url = url, api_key = api_key, save_file = save_file)
-    People.get_count_people_per_orgs(people_details_df = officer_data, save_file = save_file)
+    # People.get_count_people_per_orgs(people_details_df = officer_data, save_file = save_file)
 
     charges = CT.get_charges_data(companies, url, api_key, save_file = save_file)
-    transactions = CT.get_transactions_data(charges = charges, save_file = save_file)
+    transactions = CT.get_transactions_data(charges = charges, api_key = api_key, save_file = save_file)
     charges_transactions_merged = CT.merge_charges_transactions(charges, transactions, save_file = save_file)
     number_of_charges = CT.get_number_charges(charges, save_file = save_file)
 
-    Insolvency.get_insolvency_data(companies, url, api_key, save_file = save_file)
+    #Insolvency.get_insolvency_data(companies, url, api_key, save_file = save_file)
 
+####NEED TO FIX ABOVE LINES
 
 if __name__ == '__main__':
 

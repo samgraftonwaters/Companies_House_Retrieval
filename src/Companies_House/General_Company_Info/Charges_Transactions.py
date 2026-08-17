@@ -16,9 +16,9 @@ def get_charges_data(companies, url, api_key, save_file = False):
         charges.to_csv('Company_Charges_Table.csv', sep = ',', index = False)
     return(charges)
 
-def get_transactions_data(charges, save_file = False):
+def get_transactions_data(charges, api_key, save_file = False):
 
-    transactions = CAF.pulling_transactions_data(iterative_range = len(charges), charges_df = charges)
+    transactions = CAF.pulling_transactions_data(iterative_range = len(charges), charges_df = charges, api_key = api_key)
 
     print(transactions.head(5))
     if save_file == True:

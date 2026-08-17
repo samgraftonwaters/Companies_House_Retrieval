@@ -54,6 +54,9 @@ def get_significant_control_data(companies, url, api_key, save_file = False):
 def get_count_people_per_orgs(people_details_df, save_file = False):
 
     people_orgs_df = people_details_df.copy()
+
+    print(people_orgs_df.columns)
+
     people_orgs_df = people_orgs_df[['Name (Person Details)', 'Officer Role (Person Details)', 'Company Number', 'Company Status', 'Resigned (Person Details)']]
     people_orgs_df = people_orgs_df.rename(columns = {'Name (Person Details)' : 'Name', 'Officer Role (Person Details)' : 'Role',
                                                     'Resigned (Person Details)' : 'Resigned'})

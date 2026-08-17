@@ -157,7 +157,7 @@ def pulling_charge_data(iterative_range : int, company_house_numbers : list, url
 
     return(df)
 
-def pulling_transactions_data(iterative_range : int, charges_df, url : str, api_key : str):
+def pulling_transactions_data(iterative_range : int, charges_df, api_key : str):
 
     required_columns = ['type', 'date', 'category', 'subcategory',
        'description', 'action_date', 'description_values_charge_number']
@@ -280,6 +280,7 @@ def pulling_insolvency_data(iterative_range : int, company_house_numbers : list,
     insolvency_dates.columns = ['Insolvency Time Period', 'Date', 'Insolvency Type', 'Insolvency Number', 'Company Number']
     
     insolvency_prac = pd.concat(insolvency_prac, ignore_index=True)
+    print(insolvency_prac.columns)
     insolvency_prac = insolvency_prac.drop(['address_locality', 'address_region', 'postcode', 'address_line_1', 'address_line_2'], axis = 1)
     insolvency_prac.columns = ['Practitioner Name', 'Appointed On', 'Role', 'Insolvency Type', 
                                'Insolvency Number', 'Company Number', 'Ceased to Act On']
