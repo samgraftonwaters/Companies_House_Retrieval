@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 
-import Call_API_Functions as CAF
+from . import Call_API_Functions as CAF
 
 def get_officers_data(companies, url, api_key, save_file = False):
 
