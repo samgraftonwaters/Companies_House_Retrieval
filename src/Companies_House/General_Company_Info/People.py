@@ -50,9 +50,11 @@ def get_significant_control_data(companies, url, api_key, save_file = False):
 
     return(sig_control_df)
 
-def get_peoples_details(data_table, url, api_key, save_file = False):
+def get_peoples_details(companies, url, api_key, save_file = False):
 
-    people_details_full_df = CAF.pulling_additional_data(iterative_range = len(data_table), company_house_numbers = data_table, url = url,  api_key = api_key)
+    data_table = CAF.pulling_people_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
+
+    people_details_full_df = CAF.pulling_additional_data(iterative_range = len(data_table), data_table = data_table, url = url,  api_key = api_key)
 
     people_details_df = people_details_full_df.copy()
 
