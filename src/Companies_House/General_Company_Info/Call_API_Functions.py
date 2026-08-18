@@ -173,6 +173,7 @@ def pulling_transactions_data(iterative_range : int, charges_df, api_key : str):
     for i in range(iterative_range):
 
         url = expanded['Link'][i]
+        company_number = charges_df['Company Number'][i]
 
         if pd.isna(url) or not isinstance(url, str):
             continue
@@ -187,11 +188,13 @@ def pulling_transactions_data(iterative_range : int, charges_df, api_key : str):
 
             df = df.reindex(columns=required_columns)
 
+            df['Company Number'] = company_number
+
             companies.append(df)
     
     df = pd.concat(companies, ignore_index=True)
 
-    df.columns = ['Type', 'Date', 'Category', 'Subcategory', 'Description', 'Action Date', 'Charge Code']
+    df.columns = ['Type', 'Date', 'Category', 'Subcategory', 'Description', 'Action Date', 'Charge Code', 'Company Number']
 
     return(df)
 
@@ -280,10 +283,8 @@ def pulling_insolvency_data(iterative_range : int, company_house_numbers : list,
     insolvency_dates.columns = ['Insolvency Time Period', 'Date', 'Insolvency Type', 'Insolvency Number', 'Company Number']
     
     insolvency_prac = pd.concat(insolvency_prac, ignore_index=True)
-    print(insolvency_prac.columns)
-    insolvency_prac = insolvency_prac.drop(['address_locality', 'address_region', 'postcode', 'address_line_1', 'address_line_2'], axis = 1)
-    insolvency_prac.columns = ['Practitioner Name', 'Appointed On', 'Role', 'Insolvency Type', 
-                               'Insolvency Number', 'Company Number', 'Ceased to Act On']
+    insolvency_prac = insolvency_prac.drop(['address_locality', 'address_region', 'address_postal_code', 'address_address_line_1', 'address_line_2'], axis = 1, errors='ignore')
+    insolvency_prac.columns = ['Practitioner Name', 'Appointed On', 'Role', 'Insolvency Type', 'Insolvency Number', 'Company Number']
         
     return(insolvency_dates, insolvency_prac)
     

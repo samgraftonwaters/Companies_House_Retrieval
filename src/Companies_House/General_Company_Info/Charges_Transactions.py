@@ -26,7 +26,11 @@ def get_transactions_data(charges, api_key, save_file = False):
     return(transactions)
 
 def merge_charges_transactions(charges, transactions, save_file = False):
-    charges_transactions = pd.merge(charges.drop(['Transactions', 'Persons Entitled', 'Classification Type', 'Particulars Type'], axis = 1), transactions, on = 'Charge Code', how = 'left')
+
+    charges = charges.drop(['Transactions', 'Persons Entitled', 'Classification Type', 'Particulars Type'], axis = 1)
+    transactions = transactions.drop(['Company Name'], axis = 1)
+    
+    charges_transactions = pd.merge(charges, transactions, on = 'Charge Code', how = 'left')
     charges_transactions.head(2)
 
     if save_file == True:

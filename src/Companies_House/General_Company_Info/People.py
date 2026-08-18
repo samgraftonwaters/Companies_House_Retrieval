@@ -60,32 +60,27 @@ def get_count_people_per_orgs(people_details_df, save_file = False):
     people_orgs_df = people_orgs_df[['Name (Person Details)', 'Officer Role (Person Details)', 'Company Number', 'Company Status', 'Resigned (Person Details)']]
     people_orgs_df = people_orgs_df.rename(columns = {'Name (Person Details)' : 'Name', 'Officer Role (Person Details)' : 'Role',
                                                     'Resigned (Person Details)' : 'Resigned'})
-    print(people_orgs_df.head(5))
 
     count_role = people_orgs_df.groupby(['Name', 'Role']).size().unstack(fill_value=0).reindex(fill_value=0).reset_index()
-    print(count_role.head(5))
 
     count_orgs = people_orgs_df.groupby(['Name'])['Company Number'].count().reset_index()
     count_orgs.columns = ['Name', 'Number of Associated Companies']
 
-    print(count_orgs.head(5))
-
-    count_status = people_orgs_df.groupby(['Name', 'Company Status']).size().unstack(fill_value=0).reindex(fill_value=0).reset_index()
+    expected_statuses = ['active', 'administration', 'dissolved', 'liquidation']
+    count_status = people_orgs_df.groupby(['Name', 'Company Status']).size().unstack(fill_value=0).reindex(columns=expected_statuses, fill_value=0).reset_index()
 
     count_status.columns = ['Name', 'Status: Actice', 'Status: Administration', 'Status: Disolved', 'Status: Liquidation']
-    print(count_status.head(5))
 
     count_resigned = people_orgs_df.groupby(['Name', 'Resigned']).size().unstack(fill_value=0).reindex(fill_value=0).reset_index()
     count_resigned.columns = ['Name', 'Active', 'Resigned']
-    print(count_resigned.head(5))
 
     merge_1 = pd.merge(count_orgs, count_role, on = 'Name', how = 'left')
 
     merge_2 = pd.merge(count_status, count_resigned, on = 'Name', how = 'left')
 
     people_orgs_count = pd.merge(merge_1, merge_2, on = 'Name', how = 'left')
-    print(people_orgs_count.columns)
 
+    print(people_orgs_count.columns)
     print(people_orgs_count.head(5))
 
     if save_file == True:

@@ -31,7 +31,7 @@ def get_company_info(companies, url, api_key, save_file = False):
     charges_transactions_merged = CT.merge_charges_transactions(charges, transactions, save_file = save_file)
     number_of_charges = CT.get_number_charges(charges, save_file = save_file)
 
-    #Insolvency.get_insolvency_data(companies, url, api_key, save_file = save_file)
+    Insolvency.get_insolvency_data(companies, url, api_key, save_file = save_file)
 
 ####NEED TO FIX ABOVE LINES
 
