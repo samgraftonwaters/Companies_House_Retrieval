@@ -50,6 +50,25 @@ def get_significant_control_data(companies, url, api_key, save_file = False):
 
     return(sig_control_df)
 
+def get_peoples_details(data_table, url, api_key, save_file = False):
+
+    people_details_full_df = CAF.pulling_additional_data(iterative_range = len(data_table), company_house_numbers = data_table, url = url,  api_key = api_key)
+
+    people_details_df = people_details_full_df.copy()
+
+    people_details_df = people_details_df [['Name (Person Details)', 'Forename (Person Details)', 'Surname (Person Details)', 
+                                        'Officer Role (Person Details)', 'Company Number', 'Company Name', 'Company Status', 
+                                        'Appointed On', 'Pre 1992 Appointment (Person Details)', 'Identity Verification End On', 
+                                        'Identity Verification Start On', 'Resigned on']]
+
+    people_details_df['Resigned (Person Details)'] = np.where(people_details_df['Resigned on'].isna() == True, False, True)
+    people_details_df.head(5)
+
+    if save_file == True:
+        people_details_df.to_csv('Org_Sig_Control_Current_Previous_Orgs.csv', sep = ',', index = False)
+
+    return(people_details_df)
+
 
 def get_count_people_per_orgs(people_details_df, save_file = False):
 

@@ -198,7 +198,7 @@ def pulling_transactions_data(iterative_range : int, charges_df, api_key : str):
 
     return(df)
 
-def pulling_additional_data(iterative_range : int, data_table, link_col_name : str, url : str, api_key : str):
+def pulling_additional_data(iterative_range : int, data_table, url : str, api_key : str):
 
     required_columns = ['appointed_on', 'name', 'is_pre_1992_appointment', 'officer_role',
        'address_address_line_1', 'address_address_line_2', 'address_country',
@@ -215,9 +215,7 @@ def pulling_additional_data(iterative_range : int, data_table, link_col_name : s
     
     for i in range(iterative_range):
 
-        # print(f"This person is associated with Company Number registered as: {company_data['Company Number'][i]}")
-
-        url = data_table[link_col_name][i]
+        url = data_table['Appointment Links'][i]
       
         output = APIF.call_additional_details(url = url, api_key = api_key)
     
