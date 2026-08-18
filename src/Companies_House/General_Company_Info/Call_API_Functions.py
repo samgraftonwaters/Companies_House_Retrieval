@@ -281,8 +281,12 @@ def pulling_insolvency_data(iterative_range : int, company_house_numbers : list,
     insolvency_dates.columns = ['Insolvency Time Period', 'Date', 'Insolvency Type', 'Insolvency Number', 'Company Number']
     
     insolvency_prac = pd.concat(insolvency_prac, ignore_index=True)
-    insolvency_prac = insolvency_prac.drop(['address_locality', 'address_region', 'address_postal_code', 'address_address_line_1', 'address_line_2'], axis = 1, errors='ignore')
-    insolvency_prac.columns = ['Practitioner Name', 'Appointed On', 'Role', 'Insolvency Type', 'Insolvency Number', 'Company Number']
-        
+    print(insolvency_prac)
+
+    insolvency_prac = insolvency_prac.drop(['address_locality', 'address_region', 'address_postal_code', 'address_address_line_1', 'address_line_2', 'ceased_to_act_on'], axis = 1, errors='ignore')
+    insolvency_prac = insolvency_prac.rename(columns = {'name' : 'Practitioner Name', 'role' : 'Role', 'Type' : 'Insolvency Type', 'Number' : 'Insolvency Number', 'appointed_on' : 'Appointed On'})
+ 
+    print(insolvency_dates.head())
+    print(insolvency_prac.head())
     return(insolvency_dates, insolvency_prac)
     

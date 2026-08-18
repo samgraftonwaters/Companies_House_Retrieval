@@ -28,7 +28,7 @@ def get_transactions_data(charges, api_key, save_file = False):
 def merge_charges_transactions(charges, transactions, save_file = False):
 
     charges = charges.drop(['Transactions', 'Persons Entitled', 'Classification Type', 'Particulars Type'], axis = 1)
-    transactions = transactions.drop(['Company Name'], axis = 1)
+    transactions = transactions.drop(['Company Number'], axis = 1)
     
     charges_transactions = pd.merge(charges, transactions, on = 'Charge Code', how = 'left')
     charges_transactions.head(2)

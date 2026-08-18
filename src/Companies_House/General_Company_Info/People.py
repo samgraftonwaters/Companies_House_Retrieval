@@ -18,7 +18,8 @@ def get_officers_data(companies, url, api_key, save_file = False):
 
     people_df[['Surname (Officers)', 'Forename (Officers)']] = people_df['Name (Officers)'].str.split(',', n=1, expand=True)
 
-    print(people_df.head(5))
+    print(people_df.head(10))
+    print(people_df.isna().sum())
 
     if save_file == True:
         people_df.to_csv('Company_Officers_Table.csv', sep = ',', index = False)

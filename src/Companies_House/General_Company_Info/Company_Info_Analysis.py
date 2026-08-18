@@ -10,7 +10,7 @@ import Charges_Transactions as CT
 import Insolvency
 
 
-api_key = None
+api_key =  None
 url = "https://api.company-information.service.gov.uk/company/"
 
 companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '02516363', '04860838', '11210637', '06987042', '01588942', '02740580', '02582268', '10921663', '10623473', '03864182',
@@ -19,20 +19,20 @@ companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '025163
 
 def get_company_info(companies, url, api_key, save_file = False):
 
-    Overview.get_overview_data(companies = companies, url = url, api_key = api_key, save_file = save_file)
+    # Overview.get_overview_data(companies = companies, url = url, api_key = api_key, save_file = save_file)
 
     officer_data = People.get_officers_data(companies = companies, url = url, api_key = api_key, save_file = save_file)
-    print(officer_data.columns)
+    # print(officer_data.columns)
     People.get_significant_control_data(companies = companies, url = url, api_key = api_key, save_file = save_file)
     peoples_details = People.get_peoples_details(data_table = officer_data, url = url, api_key = api_key, save_file = save_file)
     People.get_count_people_per_orgs(people_details_df = peoples_details, save_file = save_file)
 
-    charges = CT.get_charges_data(companies, url, api_key, save_file = save_file)
-    transactions = CT.get_transactions_data(charges = charges, api_key = api_key, save_file = save_file)
-    charges_transactions_merged = CT.merge_charges_transactions(charges, transactions, save_file = save_file)
-    number_of_charges = CT.get_number_charges(charges, save_file = save_file)
+    # charges = CT.get_charges_data(companies, url, api_key, save_file = save_file)
+    # transactions = CT.get_transactions_data(charges = charges, api_key = api_key, save_file = save_file)
+    # charges_transactions_merged = CT.merge_charges_transactions(charges, transactions, save_file = save_file)
+    # number_of_charges = CT.get_number_charges(charges, save_file = save_file)
 
-    Insolvency.get_insolvency_data(companies, url, api_key, save_file = save_file)
+    # Insolvency.get_insolvency_data(companies, url, api_key, save_file = save_file)
 
 ####NEED TO FIX ABOVE LINES
 
