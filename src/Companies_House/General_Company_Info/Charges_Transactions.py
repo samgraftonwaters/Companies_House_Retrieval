@@ -5,6 +5,15 @@ import time
 
 import Call_API_Functions as CAF
 
+api_key = None
+url = "https://api.company-information.service.gov.uk/company/"
+
+companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '02516363', '04860838', 
+             '11210637', '06987042', '01588942', '02740580', '02582268', '10921663', '10623473', 
+             '03864182', '02404983', '08313240', '10622354', '12043446', '11558635', '05852516', 
+             '06976037', '05167623', '08445134', '11452512', '05714286', '05271676', '07883905', 
+             '12299608', '03053472']
+
 def get_charges_data(companies, url, api_key, save_file = False):
 
     charges = CAF.pulling_charge_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
@@ -81,3 +90,10 @@ def get_number_charges(charges, save_file = False):
         number_charges.to_csv('Company_Number_Prop_Charges.csv',  sep = ',', index = False)
 
     return(number_charges)
+
+if __name__ == '__main__':
+
+    charges = get_charges_data(companies, url, api_key, save_file = True)
+    transactions = get_transactions_data(charges = charges, api_key = api_key, save_file = True)
+    charges_transactions_merged = merge_charges_transactions(charges, transactions, save_file = True)
+    number_of_charges = get_number_charges(charges, save_file = True)

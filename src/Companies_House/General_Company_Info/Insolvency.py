@@ -5,6 +5,15 @@ import time
 
 import Call_API_Functions as CAF
 
+api_key = None
+url = "https://api.company-information.service.gov.uk/company/"
+
+companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '02516363', '04860838', 
+             '11210637', '06987042', '01588942', '02740580', '02582268', '10921663', '10623473', 
+             '03864182', '02404983', '08313240', '10622354', '12043446', '11558635', '05852516', 
+             '06976037', '05167623', '08445134', '11452512', '05714286', '05271676', '07883905', 
+             '12299608', '03053472']
+
 def get_insolvency_data(companies, url, api_key, save_file = False):
 
     insolvency_dates, insolvency_practitioners = CAF.pulling_insolvency_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
@@ -26,5 +35,9 @@ def get_insolvency_data(companies, url, api_key, save_file = False):
         insolvency_dates.to_csv('Insolvency_Dates_Types.csv', sep = ',', index = False)
 
     return(insolvency_metrics)
+
+if __name__ == '__main__':
+
+    get_insolvency_data(companies, url, api_key, save_file = True)
 
 

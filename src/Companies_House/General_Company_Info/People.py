@@ -5,6 +5,15 @@ import time
 
 import Call_API_Functions as CAF
 
+api_key = None
+url = "https://api.company-information.service.gov.uk/company/"
+
+companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '02516363', '04860838', 
+             '11210637', '06987042', '01588942', '02740580', '02582268', '10921663', '10623473', 
+             '03864182', '02404983', '08313240', '10622354', '12043446', '11558635', '05852516', 
+             '06976037', '05167623', '08445134', '11452512', '05714286', '05271676', '07883905', 
+             '12299608', '03053472']
+
 def get_officers_data(companies, url, api_key, save_file = False):
 
     people_full_df = CAF.pulling_people_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
@@ -108,3 +117,10 @@ def get_count_people_per_orgs(people_details_df, save_file = False):
         people_orgs_count.to_csv('Count_Company_People_Assigned.csv', sep = ',', index = False)
 
     return(people_orgs_count)
+
+if __name__ == '__main__':
+
+    get_officers_data(companies = companies, url = url, api_key = api_key, save_file = True)
+    get_significant_control_data(companies = companies, url = url, api_key = api_key, save_file = True)
+    peoples_details = get_peoples_details(companies = companies, url = url, api_key = api_key, save_file = True)
+    get_count_people_per_orgs(people_details_df = peoples_details, save_file = True)
