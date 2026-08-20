@@ -14,7 +14,22 @@ companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '025163
              '06976037', '05167623', '08445134', '11452512', '05714286', '05271676', '07883905', 
              '12299608', '03053472']
 
-def get_insolvency_data(companies, url, api_key, save_file = False):
+def get_insolvency_data(companies : list, url : str, api_key : str, save_file : bool = False):
+
+    """
+    Obtain any insolvency details and information about a company.
+    
+    Parameters:
+    -----------
+        companies (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe containing insolvency details of each company if present.
+    """
 
     insolvency_dates, insolvency_practitioners = CAF.pulling_insolvency_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
 
