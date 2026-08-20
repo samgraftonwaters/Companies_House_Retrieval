@@ -14,7 +14,22 @@ companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '025163
              '06976037', '05167623', '08445134', '11452512', '05714286', '05271676', '07883905', 
              '12299608', '03053472']
 
-def get_officers_data(companies, url, api_key, save_file = False):
+def get_officers_data(companies : list, url : str, api_key : str, save_file : bool = False):
+
+    """
+    Obtain the Officers for each company and their respective details
+    
+    Parameters:
+    -----------
+        companies (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe containing Officer details for each company in the companies list or series
+    """
 
     people_full_df = CAF.pulling_people_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
     print(len(people_full_df))
@@ -35,8 +50,22 @@ def get_officers_data(companies, url, api_key, save_file = False):
     return(people_df)
 
 
-def get_significant_control_data(companies, url, api_key, save_file = False):
+def get_significant_control_data(companies : list, url : str, api_key : str, save_file : bool = False):
 
+    """
+    Obtain the people with significant control at each company and their respective details
+    
+    Parameters:
+    -----------
+        companies (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe containing people with significant control details for each company in the companies list or series
+    """
     sig_control_full_df = CAF.pulling_sig_control_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
 
     print(len(sig_control_full_df))
@@ -59,7 +88,22 @@ def get_significant_control_data(companies, url, api_key, save_file = False):
 
     return(sig_control_df)
 
-def get_peoples_details(companies, url, api_key, save_file = False):
+def get_peoples_details(companies : list, url : str, api_key : str, save_file : bool = False):
+
+    """
+    Obtain the people's additional information and details at each company and their respective details
+    
+    Parameters:
+    -----------
+        companies (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe containing people's additional details for each company in the companies list or series
+    """
 
     data_table = CAF.pulling_people_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
 
@@ -83,6 +127,19 @@ def get_peoples_details(companies, url, api_key, save_file = False):
 
 def get_count_people_per_orgs(people_details_df, save_file = False):
 
+    """
+    Count the number of companies associated with each person
+
+    Parameters:
+    -----------
+        people_details_df (dataframe): dataframe containing people's details
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe containing how many companies each person is associated with
+    """
+    
     people_orgs_df = people_details_df.copy()
 
     print(people_orgs_df.columns)

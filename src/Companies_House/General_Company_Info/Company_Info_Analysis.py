@@ -33,8 +33,6 @@ def get_company_info(companies, url, api_key, save_file = False):
 
     Insolvency.get_insolvency_data(companies, url, api_key, save_file = save_file)
 
-####NEED TO FIX ABOVE LINES
-
 if __name__ == '__main__':
 
     get_company_info(companies = companies, url = url, api_key = api_key, save_file = False)
