@@ -8,7 +8,8 @@ from Companies_House import API_Functions as APIF
 def pulling_overview_data(company_house_numbers : list, url : str, api_key : str):
     
     """
-    Obtain the Officers for each company and their respective details
+    Obtain the overview data for each company and their respective details using an API call.
+    Required columns are those deemed most important to be taken from the API table
     
     Parameters:
     -----------
@@ -18,7 +19,7 @@ def pulling_overview_data(company_house_numbers : list, url : str, api_key : str
 
     Returns:
     --------
-        DataFrame: dataframe containing Officer details for each company in the companies list or series
+        DataFrame: dataframe containing overview details from an API call
     """
 
     required_columns = ['company_name', 'company_number', 'company_status', 'company_status_detail', 'date_of_creation', 'has_charges', 
@@ -55,6 +56,21 @@ def pulling_overview_data(company_house_numbers : list, url : str, api_key : str
 
 
 def pulling_people_data(company_house_numbers : list, url : str, api_key : str):
+
+    """
+    Obtain People's data for each company and their respective details using an API call.
+    Required columns are those deemed most important to be taken from the API table
+    
+    Parameters:
+    -----------
+        company_house_numbers (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+
+    Returns:
+    --------
+        DataFrame: dataframe containing People's details from an API call
+    """
 
     required_columns = ['appointed_on', 'is_pre_1992_appointment', 'name', 'officer_role', 'person_number', 'address_address_line_1', 
                         'address_address_line_2', 'address_locality', 'address_postal_code', 
@@ -96,6 +112,21 @@ def pulling_people_data(company_house_numbers : list, url : str, api_key : str):
 
 def pulling_sig_control_data(company_house_numbers : list, url : str, api_key : str):
 
+    """
+    Obtain people with significant control data for each company and their respective details using an API call.
+    Required columns are those deemed most important to be taken from the API table
+    
+    Parameters:
+    -----------
+        company_house_numbers (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+
+    Returns:
+    --------
+        DataFrame: dataframe containing persons with significant control details from an API call
+    """
+        
     required_columns = ['notified_on', 'ceased_on', 'name', 'name_elements_forename', 
                         'name_elements_surname', 'address_address_line_1', 'address_address_line_2', 'address_country', 'address_locality', 
                         'address_postal_code', 'address_premises', 'ceased', 'kind', 'natures_of_control', 
@@ -137,6 +168,21 @@ def pulling_sig_control_data(company_house_numbers : list, url : str, api_key : 
 
 def pulling_charge_data(company_house_numbers : list, url : str, api_key : str):
 
+    """
+    Obtain the charges data for each company and their respective details using an API call.
+    Required columns are those deemed most important to be taken from the API table
+    
+    Parameters:
+    -----------
+        company_house_numbers (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+
+    Returns:
+    --------
+        DataFrame: dataframe containing charges details from an API call
+    """
+        
     required_columns = ['charge_code', 'charge_number', 'status', 'delivered_on',
                            'created_on', 'persons_entitled', 'transactions', 'classification_type',
                            'classification_description', 'particulars_type', 'particulars_description',
@@ -172,6 +218,20 @@ def pulling_charge_data(company_house_numbers : list, url : str, api_key : str):
     return(df)
 
 def pulling_transactions_data(charges_df, api_key : str):
+
+    """
+    Obtain the transactions data for each company and their respective details using an API call.
+    Required columns are those deemed most important to be taken from the API table
+    
+    Parameters:
+    -----------
+        charges_df (DataFrame): data frame containing the charges data
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+
+    Returns:
+    --------
+        DataFrame: dataframe containing transactions details from an API call
+    """
 
     required_columns = ['type', 'date', 'category', 'subcategory',
        'description', 'action_date', 'description_values_charge_number']
@@ -213,6 +273,21 @@ def pulling_transactions_data(charges_df, api_key : str):
     return(df)
 
 def pulling_additional_data(data_table, url : str, api_key : str):
+
+    """
+    Obtain the additional data for each company and their respective details using an API call.
+    Required columns are those deemed most important to be taken from the API table
+    
+    Parameters:
+    -----------
+        data_table (DataFrame)): dataframe containing data regarding officers/people at each company
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+
+    Returns:
+    --------
+        DataFrame: dataframe containing additional details for people/officers from an API call
+    """
 
     required_columns = ['appointed_on', 'name', 'is_pre_1992_appointment', 'officer_role',
        'address_address_line_1', 'address_address_line_2', 'address_country',
@@ -258,6 +333,20 @@ def pulling_additional_data(data_table, url : str, api_key : str):
     return(df)
 
 def pulling_insolvency_data(company_house_numbers : list, url : str, api_key : str):
+
+    """
+    Obtain the insolvency data for each company and their respective details using an API call.
+    
+    Parameters:
+    -----------
+        company_house_numbers (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+
+    Returns:
+    --------
+        DataFrame: dataframe containing insolvency details from an API call
+    """
 
     insolvency_dates = []
     insolvency_prac = []
