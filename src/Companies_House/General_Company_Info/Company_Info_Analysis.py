@@ -3,11 +3,11 @@ import pandas as pd
 import numpy as np
 import time
 
-import Call_API_Functions as CAF
-import Overview
-import People
-import Charges_Transactions as CT
-import Insolvency
+from Companies_House import Call_API_Functions as CAF
+from Companies_House import Overview
+from Companies_House import People
+from Companies_House import Charges_Transactions as CT
+from Companies_House import Insolvency
 
 
 api_key = None

@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 
-import Call_API_Functions as CAF
+from Companies_House import Call_API_Functions as CAF
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"
@@ -31,7 +31,7 @@ def get_insolvency_data(companies : list, url : str, api_key : str, save_file : 
         DataFrame: dataframe containing insolvency details of each company if present.
     """
 
-    insolvency_dates, insolvency_practitioners = CAF.pulling_insolvency_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
+    insolvency_dates, insolvency_practitioners = CAF.pulling_insolvency_data(company_house_numbers = companies, url = url,  api_key = api_key)
 
     number_insolvencies = insolvency_dates.groupby(['Company Number'])['Insolvency Number'].max().reset_index(name = 'Total Number Insolvencies')
     number_insolvencies.columns = ['Companies House Number', 'Total Number Insolvencies']

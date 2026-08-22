@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 
-import Call_API_Functions as CAF
+from Companies_House import Call_API_Functions as CAF
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"
@@ -31,7 +31,7 @@ def get_officers_data(companies : list, url : str, api_key : str, save_file : bo
         DataFrame: dataframe containing Officer details for each company in the companies list or series
     """
 
-    people_full_df = CAF.pulling_people_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
+    people_full_df = CAF.pulling_people_data(company_house_numbers = companies, url = url,  api_key = api_key)
     print(len(people_full_df))
     print(people_full_df.info())
     print(people_full_df.head(5))
@@ -66,7 +66,7 @@ def get_significant_control_data(companies : list, url : str, api_key : str, sav
     --------
         DataFrame: dataframe containing people with significant control details for each company in the companies list or series
     """
-    sig_control_full_df = CAF.pulling_sig_control_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
+    sig_control_full_df = CAF.pulling_sig_control_data(company_house_numbers = companies, url = url,  api_key = api_key)
 
     print(len(sig_control_full_df))
     print(sig_control_full_df.info())
@@ -105,9 +105,9 @@ def get_peoples_details(companies : list, url : str, api_key : str, save_file : 
         DataFrame: dataframe containing people's additional details for each company in the companies list or series
     """
 
-    data_table = CAF.pulling_people_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
+    data_table = CAF.pulling_people_data(company_house_numbers = companies, url = url,  api_key = api_key)
 
-    people_details_full_df = CAF.pulling_additional_data(iterative_range = len(data_table), data_table = data_table, url = url,  api_key = api_key)
+    people_details_full_df = CAF.pulling_additional_data(data_table = data_table, url = url,  api_key = api_key)
 
     people_details_df = people_details_full_df.copy()
 
@@ -139,7 +139,7 @@ def get_count_people_per_orgs(people_details_df, save_file = False):
     --------
         DataFrame: dataframe containing how many companies each person is associated with
     """
-    
+
     people_orgs_df = people_details_df.copy()
 
     print(people_orgs_df.columns)

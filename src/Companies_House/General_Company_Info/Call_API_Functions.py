@@ -5,8 +5,22 @@ import time
 
 from Companies_House import API_Functions as APIF
 
-def pulling_overview_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
+def pulling_overview_data(company_house_numbers : list, url : str, api_key : str):
     
+    """
+    Obtain the Officers for each company and their respective details
+    
+    Parameters:
+    -----------
+        company_house_numbers (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+
+    Returns:
+    --------
+        DataFrame: dataframe containing Officer details for each company in the companies list or series
+    """
+
     required_columns = ['company_name', 'company_number', 'company_status', 'company_status_detail', 'date_of_creation', 'has_charges', 
                     'has_insolvency_history', 'registered_office_is_in_dispute', 'accounts_last_accounts_period_end_on', 
                     'accounts_last_accounts_period_start_on', 'accounts_next_due', 'accounts_overdue', 'accounts_next_accounts_overdue', 
@@ -16,7 +30,7 @@ def pulling_overview_data(iterative_range : int, company_house_numbers : list, u
 
     companies = []
     
-    for i in range(iterative_range):
+    for i in range(len(company_house_numbers)):
     
         output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '')
     
@@ -40,7 +54,7 @@ def pulling_overview_data(iterative_range : int, company_house_numbers : list, u
     return(df)
 
 
-def pulling_people_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
+def pulling_people_data(company_house_numbers : list, url : str, api_key : str):
 
     required_columns = ['appointed_on', 'is_pre_1992_appointment', 'name', 'officer_role', 'person_number', 'address_address_line_1', 
                         'address_address_line_2', 'address_locality', 'address_postal_code', 
@@ -49,7 +63,7 @@ def pulling_people_data(iterative_range : int, company_house_numbers : list, url
     
     companies = []
     
-    for i in range(iterative_range):
+    for i in range(len(company_house_numbers)):
     
         output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/officers')
     
@@ -80,7 +94,7 @@ def pulling_people_data(iterative_range : int, company_house_numbers : list, url
     return(df)
 
 
-def pulling_sig_control_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
+def pulling_sig_control_data(company_house_numbers : list, url : str, api_key : str):
 
     required_columns = ['notified_on', 'ceased_on', 'name', 'name_elements_forename', 
                         'name_elements_surname', 'address_address_line_1', 'address_address_line_2', 'address_country', 'address_locality', 
@@ -90,7 +104,7 @@ def pulling_sig_control_data(iterative_range : int, company_house_numbers : list
     
     companies = []
     
-    for i in range(iterative_range):
+    for i in range(len(company_house_numbers)):
     
         output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/persons-with-significant-control')
     
@@ -121,7 +135,7 @@ def pulling_sig_control_data(iterative_range : int, company_house_numbers : list
     return(df)
 
 
-def pulling_charge_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
+def pulling_charge_data(company_house_numbers : list, url : str, api_key : str):
 
     required_columns = ['charge_code', 'charge_number', 'status', 'delivered_on',
                            'created_on', 'persons_entitled', 'transactions', 'classification_type',
@@ -131,7 +145,7 @@ def pulling_charge_data(iterative_range : int, company_house_numbers : list, url
     
     companies = []
     
-    for i in range(iterative_range):
+    for i in range(len(company_house_numbers)):
     
         output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/charges')
     
@@ -157,7 +171,7 @@ def pulling_charge_data(iterative_range : int, company_house_numbers : list, url
 
     return(df)
 
-def pulling_transactions_data(iterative_range : int, charges_df, api_key : str):
+def pulling_transactions_data(charges_df, api_key : str):
 
     required_columns = ['type', 'date', 'category', 'subcategory',
        'description', 'action_date', 'description_values_charge_number']
@@ -170,7 +184,7 @@ def pulling_transactions_data(iterative_range : int, charges_df, api_key : str):
     
     companies = []
     
-    for i in range(iterative_range):
+    for i in range(len(df)):
 
         url = expanded['Link'][i]
         company_number = charges_df['Company Number'][i]
@@ -198,7 +212,7 @@ def pulling_transactions_data(iterative_range : int, charges_df, api_key : str):
 
     return(df)
 
-def pulling_additional_data(iterative_range : int, data_table, url : str, api_key : str):
+def pulling_additional_data(data_table, url : str, api_key : str):
 
     required_columns = ['appointed_on', 'name', 'is_pre_1992_appointment', 'officer_role',
        'address_address_line_1', 'address_address_line_2', 'address_country',
@@ -213,7 +227,7 @@ def pulling_additional_data(iterative_range : int, data_table, url : str, api_ke
     
     companies = []
     
-    for i in range(iterative_range):
+    for i in range(len(data_table)):
 
         url = data_table['Appointment Links'][i]
       
@@ -243,12 +257,12 @@ def pulling_additional_data(iterative_range : int, data_table, url : str, api_ke
 
     return(df)
 
-def pulling_insolvency_data(iterative_range : int, company_house_numbers : list, url : str, api_key : str):
+def pulling_insolvency_data(company_house_numbers : list, url : str, api_key : str):
 
     insolvency_dates = []
     insolvency_prac = []
 
-    for i in range(iterative_range):
+    for i in range(len(company_house_numbers)):
 
         company_number = company_house_numbers[i]
 

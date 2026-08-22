@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 
-import Call_API_Functions as CAF
+from Companies_House import Call_API_Functions as CAF
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"
@@ -31,7 +31,7 @@ def get_overview_data(companies : list, url : str, api_key : str, save_file : bo
         DataFrame: dataframe containing the overall details of each company.
     """
 
-    overview_full_df = CAF.pulling_overview_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
+    overview_full_df = CAF.pulling_overview_data(company_house_numbers = companies, url = url,  api_key = api_key)
 
     bool_cols = ['Accounts Overdue', 'Next Accounts Overdue', 'Confirmation Statement Overdue']
     overview_full_df[bool_cols]  = overview_full_df[bool_cols].astype(bool).where(overview_full_df[bool_cols].notna())

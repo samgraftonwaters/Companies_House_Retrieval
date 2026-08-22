@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 
-import Call_API_Functions as CAF
+from Companies_House import Call_API_Functions as CAF
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"
@@ -16,7 +16,7 @@ companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '025163
 
 def get_charges_data(companies, url, api_key, save_file = False):
 
-    charges = CAF.pulling_charge_data(iterative_range = len(companies), company_house_numbers = companies, url = url,  api_key = api_key)
+    charges = CAF.pulling_charge_data(company_house_numbers = companies, url = url,  api_key = api_key)
 
     charges['Charge Number'] = charges['Charge Number'].astype(int)
     print(charges.head(5))
@@ -27,7 +27,7 @@ def get_charges_data(companies, url, api_key, save_file = False):
 
 def get_transactions_data(charges, api_key, save_file = False):
 
-    transactions = CAF.pulling_transactions_data(iterative_range = len(charges), charges_df = charges, api_key = api_key)
+    transactions = CAF.pulling_transactions_data(charges_df = charges, api_key = api_key)
 
     print(transactions.head(5))
     if save_file == True:
