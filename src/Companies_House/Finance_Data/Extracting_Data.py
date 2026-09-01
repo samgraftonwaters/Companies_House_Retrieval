@@ -10,8 +10,7 @@ warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 pd.set_option('display.max_colwidth', None)
 
 
-from Companies_House import API_Functions
-from API_Functions import *
+from Companies_House import API_Functions as APIF
 
 def pull_finance_data_from_api(iterative_range: int, company_data, number_col_name, url, api_key):
 
@@ -35,7 +34,7 @@ def pull_finance_data_from_api(iterative_range: int, company_data, number_col_na
                 "items_per_page": page_size
             }
 
-            output = call_api(url = url, api_key = api_key, company_number = company_number, params = params, company_info = '/filing-history')
+            output = APIF.call_api(url = url, api_key = api_key, company_number = company_number, params = params, company_info = '/filing-history')
 
             if not output or output == 'None':
                 break
@@ -82,7 +81,7 @@ def get_formats(doc_meta_url, api_key):
                 "has_ixbrl": False
             })
 
-        request = call_additional_details(url=doc_meta_url, api_key=api_key)
+        request = APIF.call_additional_details(url=doc_meta_url, api_key=api_key)
 
         if not isinstance(request, dict):
             raise ValueError("Non-JSON response")
@@ -91,7 +90,6 @@ def get_formats(doc_meta_url, api_key):
         links = request.get('links', {})
 
         return pd.Series({
-            # "content_url": doc_meta_url + '/content',
             "content_url": links.get("document"),
             "has_pdf": "application/pdf" in resources,
             "has_ixbrl": "application/xhtml+xml" in resources
@@ -101,7 +99,7 @@ def get_formats(doc_meta_url, api_key):
         print(f"Error for {doc_meta_url}: {e}")
         content_url = doc_meta_url + '/content' if isinstance(doc_meta_url, str) else None
         return pd.Series({
-            "content_url": links.get("document"), #doc_meta_url + '/content',
+            "content_url": links.get("document"), 
             "has_pdf": False,
             "has_ixbrl": False
         })

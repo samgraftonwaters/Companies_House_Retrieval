@@ -4,10 +4,9 @@ import time
 import warnings
 pd.set_option('display.max_colwidth', None)
 
-from Extracting_Data import *
-from Final_Table_Formatting_Functions import *
-from Final_Table_Functions import *
-from Creating_Final_Table import *
+from Companies_House import Extracting_Data as ED
+from Companies_House import Final_Table_Formatting_Functions as FTFF
+from Companies_House import Creating_Final_Table as CFT
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"
@@ -18,22 +17,22 @@ companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '025163
 number_of_years = 5
 number_iterations = len(companies)
 
-data = pull_finance_data_from_api(iterative_range = number_iterations, company_data = companies, 
+data = ED.pull_finance_data_from_api(iterative_range = number_iterations, company_data = companies, 
                                   number_col_name = 'OrganisationCompaniesHouseNumber')
 
 
-accounts_update = get_accounts_data(data = data, number_of_years = number_of_years)
+accounts_update = ED.get_accounts_data(data = data, number_of_years = number_of_years)
 
 
 accounts_update['ixbrl_reader'] = accounts_update.apply(
-    lambda r: make_ixbrl_reader(r['content_url']) if r['has_ixbrl'] else None,
+    lambda r: ED.make_ixbrl_reader(r['content_url']) if r['has_ixbrl'] else None,
     axis=1
 )
 print(len(accounts_update))
 accounts_update.head(2)
 
 
-finance_data_single_table = get_finance_data_single_table(data = accounts_update, csv_file_name = 'test_data_output.csv', save_csv = False)
+finance_data_single_table = CFT.get_finance_data_single_table(data = accounts_update, csv_file_name = 'test_data_output.csv', save_csv = False)
 
 print(finance_data_single_table.head(20))
 print(finance_data_single_table.info())
@@ -51,14 +50,14 @@ int_cols = ['FixedAssets_Current', 'FixedAssets_Previous',
 
 float_cols = ['AverageNumberEmployeesDuringPeriod_Current', 'AverageNumberEmployeesDuringPeriod_Previous']
 
-finance_data = change_data_types(df = finance_data, columns_to_change = int_cols, to_type = 'int')
-finance_data = change_data_types(df = finance_data, columns_to_change = float_cols, to_type = 'float')
+finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = int_cols, to_type = 'int')
+finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = float_cols, to_type = 'float')
 finance_data.info()
 
 # finance_data.to_csv('intermediate_test.csv', sep = ',', index = False)
 
-finance_data = updating_missing_columns(df = finance_data) 
-finance_data = correct_number_employers(df = finance_data) 
+finance_data = FTFF.updating_missing_columns(df = finance_data) 
+finance_data = FTFF.correct_number_employers(df = finance_data) 
 
 finance_data[f'Equity_ShareCapital_Previous'] = np.where(finance_data[f'Equity_ShareCapital_Previous'].isna() == True, 
                                                         finance_data[f'Equity_ShareCapital_Current'], 
@@ -102,9 +101,9 @@ int_cols = ['Average Number Employees Current', 'Average Number Employees Previo
             'Net Assets Liabilities Previous', 'Net Current Assets Liabilities Current', 'NetCurrent Assets Liabilities Previous', 
             'Total Assets Less Liabilities Current', 'Total Assets Less Liabilities Previous']
 
-finance_data = change_data_types(df = finance_data, columns_to_change = date_cols_year, to_type = 'date', date_first = 'year')
-finance_data = change_data_types(df = finance_data, columns_to_change = date_cols_day, to_type = 'date', date_first = 'day')
-finance_data = change_data_types(df = finance_data, columns_to_change = int_cols, to_type = 'int')
+finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = date_cols_year, to_type = 'date', date_first = 'year')
+finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = date_cols_day, to_type = 'date', date_first = 'day')
+finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = int_cols, to_type = 'int')
 
 
 finance_data['Total Assets Current'] = (np.where(finance_data['Fixed Assets Current'].isna() == False, finance_data['Fixed Assets Current'], 0)

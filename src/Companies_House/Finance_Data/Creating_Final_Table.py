@@ -3,6 +3,11 @@ import numpy as np
 import re
 import time
 
+from Companies_House import Extracting_Data as ED
+from Companies_House import Final_Table_Formatting_Functions as FTFF
+from Companies_House import Final_Table_Functions as FTF
+from Companies_House import Creating_Final_Table as CFT
+
 def get_finance_data_single_table(data, csv_file_name, save_csv=True):
 
     finance_data = []
@@ -39,7 +44,7 @@ def get_finance_data_single_table(data, csv_file_name, save_csv=True):
             print(f"Failed reader at row {i}: {e}")
             None
     
-        result_ixbrl = parse_ixbrl(html)
+        result_ixbrl = ED.parse_ixbrl(html)
 
         ix_data = result_ixbrl.copy()  
 
@@ -65,17 +70,17 @@ def get_finance_data_single_table(data, csv_file_name, save_csv=True):
 
         finance['Company_Number'] = company_number
 
-        finance[['period_type', 'period_end', 'period_date', 'segment']] = finance['context'].apply(parse_context)
+        finance[['period_type', 'period_end', 'period_date', 'segment']] = finance['context'].apply(FTF.parse_context)
 
         finance = finance[(finance['period_end'] == 'END') | (finance['period_end'].isna())]
 
-        finance['period_date_parsed'] = finance['period_date'].apply(parse_date_safe)
+        finance['period_date_parsed'] = finance['period_date'].apply(FTF.parse_date_safe)
         
-        finance['creditor_type'] = finance.apply(lambda row: extract_creditor_type(row['context'], row['name']), axis=1)
-        finance['equity_type'] = finance.apply(lambda row: extract_equity_type(row['context'], row['name'], row['format']), axis = 1)
-        finance['period_mapped'] = finance['period_type'].map(period_mapping())
+        finance['creditor_type'] = finance.apply(lambda row: FTF.extract_creditor_type(row['context'], row['name']), axis=1)
+        finance['equity_type'] = finance.apply(lambda row: FTF.extract_equity_type(row['context'], row['name'], row['format']), axis = 1)
+        finance['period_mapped'] = finance['period_type'].map(FTF.period_mapping())
 
-        finance = map_period(df = finance, mask_col = 'period_mapped', group_col = 'New_Name', name_col = 'period_date_parsed', rank_col = 'period_rank')
+        finance = FTF.map_period(df = finance, mask_col = 'period_mapped', group_col = 'New_Name', name_col = 'period_date_parsed', rank_col = 'period_rank')
         
         finance['has_segment'] = finance['context'].str.contains('segment', na=False)
         
@@ -83,13 +88,13 @@ def get_finance_data_single_table(data, csv_file_name, save_csv=True):
                                                      .drop(columns='has_segment')
                                                      .reset_index(drop = True))
 
-        finance = equity_creditor_debitors_checks(df = finance)
-        finance = update_period_mapping(df = finance)
-        finance = remove_segments(df = finance)
+        finance = FTF.equity_creditor_debitors_checks(df = finance)
+        finance = FTF.update_period_mapping(df = finance)
+        finance = FTF.remove_segments(df = finance)
         
         finance['metric_name'] = finance['New_Name']
 
-        finance = formatting_with_masks(df = finance)
+        finance = FTF.formatting_with_masks(df = finance)
 
         finance['value'] = (finance['value'].astype(str).str.replace(',', '', regex=False).str.strip())   
 
@@ -97,11 +102,11 @@ def get_finance_data_single_table(data, csv_file_name, save_csv=True):
 
         # finance.to_csv(f'Column_Testing/UpdatedColumns_{company_number}_{i}.csv', sep = ',', index = False)
         
-        finance = finance.groupby("Final_Name", group_keys=False, as_index=False).apply(filter_group, include_groups=False).reset_index(drop = True)      
+        finance = finance.groupby("Final_Name", group_keys=False, as_index=False).apply(FTF.filter_group, include_groups=False).reset_index(drop = True)      
         
         finance['Final_Name'] = finance['metric_name'] + '_' + finance['period_mapped']
 
-        finance = account_for_duplicate_names(df = finance)
+        finance = FTF.account_for_duplicate_names(df = finance)
 
         prev_to_curr = ['EndDateForPeriodCoveredByReport_Previous', 'BalanceSheetDate_Previous', 'StartDateForPeriodCoveredByReport_Previous',
                 'UKCompaniesHouseRegisteredNumber_Previous']
@@ -123,14 +128,14 @@ def get_finance_data_single_table(data, csv_file_name, save_csv=True):
 
         if len(finance) < 20:
 
-            finance_html = switch_to_html_method(html = html, df = finance)
+            finance_html = FTF.switch_to_html_method(html = html, df = finance)
 
             if finance_html is not None:
         
                 if len(finance_html) > len(finance):
                     finance = finance_html
 
-                finance = reformat_html_df(df=finance)
+                finance = FTF.reformat_html_df(df=finance)
 
         finance_clean = finance[["Final_Name", "Value_Final"]]
         
