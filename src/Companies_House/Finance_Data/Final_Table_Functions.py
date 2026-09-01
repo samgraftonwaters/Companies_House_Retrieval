@@ -3,6 +3,8 @@ import numpy as np
 import re
 import time
 
+# from Companies_House import Extracting_Data
+from Extracting_Data import *
 
 def map_period(df, mask_col = 'period_mapped', group_col = 'New_Name', name_col = 'period_date_parsed', rank_col = 'period_rank'):
 
