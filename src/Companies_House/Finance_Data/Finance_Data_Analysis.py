@@ -38,6 +38,8 @@ print(finance_data_single_table.head(20))
 print(finance_data_single_table.info())
 finance_data = finance_data_single_table.copy()
 
+# finance_data.to_csv('intermediate_test.csv', sep = ',', index = False)
+
 int_cols = ['FixedAssets_Current', 'FixedAssets_Previous',
             'CurrentAssets_Current', 'CurrentAssets_Previous', 'CashBankOnHand_Current', 'CashBankOnHand_Previous', 'Creditors_Within1Y_Current',
             'Creditors_Within1Y_Previous', 'Creditors_After1Y_Current', 'Creditors_After1Y_Previous', 'Debtors_Current', 'Debtors_Previous',
@@ -54,42 +56,15 @@ finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = int
 finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = float_cols, to_type = 'float')
 finance_data.info()
 
-# finance_data.to_csv('intermediate_test.csv', sep = ',', index = False)
-
 finance_data = FTFF.updating_missing_columns(df = finance_data) 
 finance_data = FTFF.correct_number_employers(df = finance_data) 
 
-finance_data[f'Equity_ShareCapital_Previous'] = np.where(finance_data[f'Equity_ShareCapital_Previous'].isna() == True, 
-                                                        finance_data[f'Equity_ShareCapital_Current'], 
-                                                        finance_data[f'Equity_ShareCapital_Previous'])
+finance_data = FTFF.update_columns_if_similar_values(df = finance_data)
 
-finance_data['UKCompaniesHouseRegisteredNumber_Current'] = np.where(finance_data['UKCompaniesHouseRegisteredNumber_Current'].isna() == True, 
-                                                                    finance_data['Company_Number'],
-                                                                    finance_data['UKCompaniesHouseRegisteredNumber_Current'])
-finance_data = finance_data.drop('Company_Number', axis = 1)
 print(finance_data.head(20))
 print(finance_data.info())
 
-reorder_cols = ['UKCompaniesHouseRegisteredNumber_Current', 'Account_Date', 'Action_Date',  
-                'StartDateForPeriodCoveredByReport_Current', 'EndDateForPeriodCoveredByReport_Current', 'BalanceSheetDate_Current', 
-                'AverageNumberEmployeesDuringPeriod_Current', 'AverageNumberEmployeesDuringPeriod_Previous', 'FixedAssets_Current', 
-                'FixedAssets_Previous', 'CurrentAssets_Current', 'CurrentAssets_Previous', 'CashBankOnHand_Current', 'CashBankOnHand_Previous', 
-                'Creditors_Within1Y_Current', 'Creditors_Within1Y_Previous', 'Creditors_After1Y_Current', 'Creditors_After1Y_Previous',
-                'Debtors_Current', 'Debtors_Previous', 'Equity_TotalEquity_Current', 
-                'Equity_TotalEquity_Previous', 'NetAssetsLiabilities_Current', 'NetAssetsLiabilities_Previous', 'NetCurrentAssetsLiabilities_Current', 
-                'NetCurrentAssetsLiabilities_Previous', 'TotalAssetsLessCurrentLiabilities_Current', 'TotalAssetsLessCurrentLiabilities_Previous']
-
-finance_data = finance_data.loc[:, reorder_cols]
-
-rename_cols = ['Companies House Number', 'Account Date', 'Action Date', 'Period Start Date', 'Period End Date', 
-               'Balance Sheet Date', 'Average Number Employees Current', 'Average Number Employees Previous', 'Fixed Assets Current', 
-               'Fixed Assets Previous', 'Current Assets Current', 'Current Assets Previous', 'Cash Bank On Hand Current', 'Cash Bank On Hand Previous', 
-               'Creditors Within 1Y Current', 'Creditors Within 1Y Previous', 'Creditors After 1Y Current', 'Creditors After 1Y Previous',  
-               'Debtors Current', 'Debtors Previous', 'Total Equity Current', 'Total Equity Previous', 'Net Assets Liabilities Current', 
-               'Net Assets Liabilities Previous', 'Net Current Assets Liabilities Current', 'NetCurrent Assets Liabilities Previous', 
-               'Total Assets Less Liabilities Current', 'Total Assets Less Liabilities Previous']
-
-finance_data.columns = rename_cols
+finance_data = FTFF.reoreder_rename_cols(df = finance_data)
 
 date_cols_year = ['Account Date', 'Action Date']
 date_cols_day = ['Period Start Date', 'Period End Date', 'Balance Sheet Date']
@@ -105,16 +80,7 @@ finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = dat
 finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = date_cols_day, to_type = 'date', date_first = 'day')
 finance_data = FTFF.change_data_types(df = finance_data, columns_to_change = int_cols, to_type = 'int')
 
-
-finance_data['Total Assets Current'] = (np.where(finance_data['Fixed Assets Current'].isna() == False, finance_data['Fixed Assets Current'], 0)
-                                        + np.where(finance_data['Current Assets Current'].isna() == False, finance_data['Current Assets Current'], 0))
-finance_data['Total Assets Previous'] = (np.where(finance_data['Fixed Assets Previous'] .isna() == False, finance_data['Fixed Assets Previous'], 0)
-                                         + np.where(finance_data['Current Assets Previous'].isna() == False, finance_data['Current Assets Previous'], 0))
-
-finance_data["Period Current Year"] = np.where(finance_data["Period End Date"].isna() == False, finance_data["Period End Date"].dt.year,
-                                               finance_data["Action Date"].dt.year)
-finance_data["Period Previous Year"] = np.where(finance_data["Period End Date"].isna() == False, finance_data["Period End Date"].dt.year - 1,
-                                                finance_data["Action Date"].dt.year - 1)
+finance_data = FTFF.create_new_cols(df = finance_data)
 
 print(finance_data.head(20))
 print(finance_data.info())

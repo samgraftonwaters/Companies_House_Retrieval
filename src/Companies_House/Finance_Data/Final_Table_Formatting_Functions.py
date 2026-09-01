@@ -70,3 +70,56 @@ def change_data_types(df, columns_to_change : list | str, to_type : str, date_fi
         if date_first == 'year':
             df[columns_to_change] = df[columns_to_change].apply(pd.to_datetime, errors='coerce', yearfirst=True)
             return(df)
+
+
+def update_columns_if_similar_values(df):
+
+    df[f'Equity_ShareCapital_Previous'] = np.where(df[f'Equity_ShareCapital_Previous'].isna() == True, 
+                                                            df[f'Equity_ShareCapital_Current'], 
+                                                            df[f'Equity_ShareCapital_Previous'])
+
+    df['UKCompaniesHouseRegisteredNumber_Current'] = np.where(df['UKCompaniesHouseRegisteredNumber_Current'].isna() == True, 
+                                                                        df['Company_Number'],
+                                                                        df['UKCompaniesHouseRegisteredNumber_Current'])
+    df = df.drop('Company_Number', axis = 1)
+
+    return(df) 
+
+
+def reoreder_rename_cols(df):
+
+    reorder_cols = ['UKCompaniesHouseRegisteredNumber_Current', 'Account_Date', 'Action_Date',  
+                    'StartDateForPeriodCoveredByReport_Current', 'EndDateForPeriodCoveredByReport_Current', 'BalanceSheetDate_Current', 
+                    'AverageNumberEmployeesDuringPeriod_Current', 'AverageNumberEmployeesDuringPeriod_Previous', 'FixedAssets_Current', 
+                    'FixedAssets_Previous', 'CurrentAssets_Current', 'CurrentAssets_Previous', 'CashBankOnHand_Current', 'CashBankOnHand_Previous', 
+                    'Creditors_Within1Y_Current', 'Creditors_Within1Y_Previous', 'Creditors_After1Y_Current', 'Creditors_After1Y_Previous',
+                    'Debtors_Current', 'Debtors_Previous', 'Equity_TotalEquity_Current', 
+                    'Equity_TotalEquity_Previous', 'NetAssetsLiabilities_Current', 'NetAssetsLiabilities_Previous', 'NetCurrentAssetsLiabilities_Current', 
+                    'NetCurrentAssetsLiabilities_Previous', 'TotalAssetsLessCurrentLiabilities_Current', 'TotalAssetsLessCurrentLiabilities_Previous']
+
+    df = df.loc[:, reorder_cols]
+
+    rename_cols = ['Companies House Number', 'Account Date', 'Action Date', 'Period Start Date', 'Period End Date', 
+                'Balance Sheet Date', 'Average Number Employees Current', 'Average Number Employees Previous', 'Fixed Assets Current', 
+                'Fixed Assets Previous', 'Current Assets Current', 'Current Assets Previous', 'Cash Bank On Hand Current', 'Cash Bank On Hand Previous', 
+                'Creditors Within 1Y Current', 'Creditors Within 1Y Previous', 'Creditors After 1Y Current', 'Creditors After 1Y Previous',  
+                'Debtors Current', 'Debtors Previous', 'Total Equity Current', 'Total Equity Previous', 'Net Assets Liabilities Current', 
+                'Net Assets Liabilities Previous', 'Net Current Assets Liabilities Current', 'NetCurrent Assets Liabilities Previous', 
+                'Total Assets Less Liabilities Current', 'Total Assets Less Liabilities Previous']
+
+    df.columns = rename_cols
+
+    return(df)
+
+def create_new_cols(df):
+    df['Total Assets Current'] = (np.where(df['Fixed Assets Current'].isna() == False, df['Fixed Assets Current'], 0)
+                                            + np.where(df['Current Assets Current'].isna() == False, df['Current Assets Current'], 0))
+    df['Total Assets Previous'] = (np.where(df['Fixed Assets Previous'] .isna() == False, df['Fixed Assets Previous'], 0)
+                                            + np.where(df['Current Assets Previous'].isna() == False, df['Current Assets Previous'], 0))
+
+    df["Period Current Year"] = np.where(df["Period End Date"].isna() == False, df["Period End Date"].dt.year,
+                                                df["Action Date"].dt.year)
+    df["Period Previous Year"] = np.where(df["Period End Date"].isna() == False, df["Period End Date"].dt.year - 1,
+                                                    df["Action Date"].dt.year - 1)
+
+    return(df)
