@@ -3,10 +3,10 @@ import numpy as np
 import re
 import time
 
-from Companies_House import Extracting_Data as ED
-from Companies_House import Final_Table_Formatting_Functions as FTFF
-from Companies_House import Final_Table_Functions as FTF
-from Companies_House import Creating_Final_Table as CFT
+import Extracting_Data as ED
+import Final_Table_Formatting_Functions as FTFF
+import Final_Table_Functions as FTF
+import Creating_Final_Table as CFT
 
 def get_finance_data_single_table(data, csv_file_name, save_csv=True):
 

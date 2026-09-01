@@ -4,9 +4,9 @@ import time
 import warnings
 pd.set_option('display.max_colwidth', None)
 
-from Companies_House import Extracting_Data as ED
-from Companies_House import Final_Table_Formatting_Functions as FTFF
-from Companies_House import Creating_Final_Table as CFT
+import Extracting_Data as ED
+import Final_Table_Formatting_Functions as FTFF
+import Creating_Final_Table as CFT
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"
@@ -17,8 +17,7 @@ companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '025163
 number_of_years = 5
 number_iterations = len(companies)
 
-data = ED.pull_finance_data_from_api(iterative_range = number_iterations, company_data = companies, 
-                                  number_col_name = 'OrganisationCompaniesHouseNumber')
+data = ED.pull_finance_data_from_api(company_house_numbers = companies, url = url, api_key = api_key)
 
 
 accounts_update = ED.get_accounts_data(data = data, number_of_years = number_of_years)
@@ -84,4 +83,4 @@ finance_data = FTFF.create_new_cols(df = finance_data)
 
 print(finance_data.head(20))
 print(finance_data.info())
-finance_data.to_csv('Cleaned_Output_test_newOrgs_11.csv', sep = ',', index = False)
+# finance_data.to_csv('Cleaned_Output_test_newOrgs_11.csv', sep = ',', index = False)

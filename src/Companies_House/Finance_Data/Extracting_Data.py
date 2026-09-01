@@ -12,7 +12,7 @@ pd.set_option('display.max_colwidth', None)
 
 from Companies_House import API_Functions as APIF
 
-def pull_finance_data_from_api(iterative_range: int, company_data, number_col_name, url, api_key):
+def pull_finance_data_from_api(company_house_numbers : list, url : str, api_key : str):
 
     required_columns = [
         'type', 'date', 'category', 'description', 'action_date', 'links_document_metadata', 'subcategory', 'paper_filed',
@@ -20,9 +20,9 @@ def pull_finance_data_from_api(iterative_range: int, company_data, number_col_na
 
     companies = []
 
-    for i in range(iterative_range):
+    for i in range(len(company_house_numbers)):
 
-        company_number = company_data[number_col_name][i]
+        company_number = company_house_numbers[i]
 
         all_items = []
         start = 0
