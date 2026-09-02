@@ -118,7 +118,7 @@ def make_ixbrl_reader(content_url, api_key):
 
 
 
-def get_accounts_data(data, number_of_years):
+def get_accounts_data(data, api_key, number_of_years):
     accounts_list = []
     
     for i, number in enumerate(data['Company Number'].unique()):
@@ -142,7 +142,7 @@ def get_accounts_data(data, number_of_years):
         format_map = {}
         
         for url in meta_urls:
-            format_map[url] = get_formats(url)
+            format_map[url] = get_formats(doc_meta_url = url, api_key = api_key)
         
         format_df = pd.DataFrame.from_dict(format_map, orient='index')
         format_df.index.name = 'links_document_metadata'

@@ -16,7 +16,7 @@ def call_api(url, api_key, company_number, company_info, params = None):
 
 def call_additional_details(url, api_key):
     
-    response = requests.get(url = "https://api.company-information.service.gov.uk" + url, auth = (api_key, ""))
+    response = requests.get(url = url, auth = (api_key, "")) #"https://api.company-information.service.gov.uk" 
     time.sleep(0.1)
     
     if response.status_code not in (200, 201):

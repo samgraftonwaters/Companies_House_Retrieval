@@ -19,12 +19,14 @@ number_iterations = len(companies)
 
 data = ED.pull_finance_data_from_api(company_house_numbers = companies, url = url, api_key = api_key)
 
+print(data.head())
 
-accounts_update = ED.get_accounts_data(data = data, number_of_years = number_of_years)
+accounts_update = ED.get_accounts_data(data = data, number_of_years = number_of_years, api_key = api_key)
 
+print(accounts_update.head())
 
 accounts_update['ixbrl_reader'] = accounts_update.apply(
-    lambda r: ED.make_ixbrl_reader(r['content_url']) if r['has_ixbrl'] else None,
+    lambda r: ED.make_ixbrl_reader(content_url = r['content_url'], api_key = api_key) if r['has_ixbrl'] else None,
     axis=1
 )
 print(len(accounts_update))
