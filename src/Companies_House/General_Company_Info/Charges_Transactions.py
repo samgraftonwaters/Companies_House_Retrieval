@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 
-from Companies_House import Call_API_Functions as CAF
+import Call_API_Functions as CAF
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"

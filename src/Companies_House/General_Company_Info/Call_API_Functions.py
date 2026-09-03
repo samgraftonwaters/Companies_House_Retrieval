@@ -252,7 +252,7 @@ def pulling_transactions_data(charges_df, api_key : str):
         if pd.isna(url) or not isinstance(url, str):
             continue
     
-        output = APIF.call_additional_details(url = url, api_key = api_key)
+        output = APIF.call_additional_details(url = "https://api.company-information.service.gov.uk" + url, api_key = api_key)
     
         if output is None:
             continue
@@ -306,7 +306,7 @@ def pulling_additional_data(data_table, url : str, api_key : str):
 
         url = data_table['Appointment Links'][i]
       
-        output = APIF.call_additional_details(url = url, api_key = api_key)
+        output = APIF.call_additional_details(url = "https://api.company-information.service.gov.uk"  + url, api_key = api_key)
     
         if output is None:
             continue
