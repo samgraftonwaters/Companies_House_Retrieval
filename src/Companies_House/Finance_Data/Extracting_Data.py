@@ -9,8 +9,27 @@ import warnings
 warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 pd.set_option('display.max_colwidth', None)
 
+def call_api(url, api_key, company_number, company_info, params = None):
+    
+    response = requests.get(url = url + company_number + company_info, params=params, auth = (api_key, ""))
+    time.sleep(0.05)
+    
+    if response.status_code not in (200, 201):
+        return(None)
+    else:
+        return(response.json())
 
-from Companies_House import API_Functions as APIF
+
+def call_additional_details(url, api_key):
+    
+    response = requests.get(url = url, auth = (api_key, ""))
+    time.sleep(0.1)
+    
+    if response.status_code not in (200, 201):
+        return(None)
+    else:
+        return(response.json())
+    
 
 def pull_finance_data_from_api(company_house_numbers : list, url : str, api_key : str):
 
@@ -34,7 +53,7 @@ def pull_finance_data_from_api(company_house_numbers : list, url : str, api_key 
                 "items_per_page": page_size
             }
 
-            output = APIF.call_api(url = url, api_key = api_key, company_number = company_number, params = params, company_info = '/filing-history')
+            output = call_api(url = url, api_key = api_key, company_number = company_number, params = params, company_info = '/filing-history')
 
             if not output or output == 'None':
                 break
@@ -81,7 +100,7 @@ def get_formats(doc_meta_url, api_key):
                 "has_ixbrl": False
             })
 
-        request = APIF.call_additional_details(url=doc_meta_url, api_key=api_key)
+        request = call_additional_details(url=doc_meta_url, api_key=api_key)
 
         if not isinstance(request, dict):
             raise ValueError("Non-JSON response")

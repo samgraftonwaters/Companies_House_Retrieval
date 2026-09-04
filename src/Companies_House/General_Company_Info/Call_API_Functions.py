@@ -3,7 +3,27 @@ import pandas as pd
 import numpy as np
 import time
 
-from Companies_House import API_Functions as APIF
+def call_api(url, api_key, company_number, company_info):
+    
+    response = requests.get(url = url + company_number + company_info, auth = (api_key, ""))
+    time.sleep(0.05)
+    
+    if response.status_code not in (200, 201):
+        return(None)
+    else:
+        return(response.json())
+
+
+def call_additional_details(url, api_key):
+    
+    response = requests.get(url = "https://api.company-information.service.gov.uk" + url, auth = (api_key, ""))
+    time.sleep(0.1)
+    
+    if response.status_code not in (200, 201):
+        return(None)
+    else:
+        return(response.json())
+    
 
 def pulling_overview_data(company_house_numbers : list, url : str, api_key : str):
     
@@ -33,7 +53,7 @@ def pulling_overview_data(company_house_numbers : list, url : str, api_key : str
     
     for i in range(len(company_house_numbers)):
     
-        output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '')
+        output = call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '')
     
         if output is None:
             continue
@@ -81,7 +101,7 @@ def pulling_people_data(company_house_numbers : list, url : str, api_key : str):
     
     for i in range(len(company_house_numbers)):
     
-        output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/officers')
+        output = call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/officers')
     
         if output is None:
             continue
@@ -137,7 +157,7 @@ def pulling_sig_control_data(company_house_numbers : list, url : str, api_key : 
     
     for i in range(len(company_house_numbers)):
     
-        output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/persons-with-significant-control')
+        output = call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/persons-with-significant-control')
     
         if output is None:
             continue
@@ -193,7 +213,7 @@ def pulling_charge_data(company_house_numbers : list, url : str, api_key : str):
     
     for i in range(len(company_house_numbers)):
     
-        output = APIF.call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/charges')
+        output = call_api(url = url, api_key = api_key, company_number = company_house_numbers[i], company_info = '/charges')
     
         if output is None:
             continue
@@ -243,8 +263,10 @@ def pulling_transactions_data(charges_df, api_key : str):
     expanded
     
     companies = []
+
+    print(len(df), len(charges_df))
     
-    for i in range(len(df)):
+    for i in range(len(charges_df)):
 
         url = expanded['Link'][i]
         company_number = charges_df['Company Number'][i]
@@ -252,7 +274,7 @@ def pulling_transactions_data(charges_df, api_key : str):
         if pd.isna(url) or not isinstance(url, str):
             continue
     
-        output = APIF.call_additional_details(url = "https://api.company-information.service.gov.uk" + url, api_key = api_key)
+        output = call_additional_details(url = url, api_key = api_key)
     
         if output is None:
             continue
@@ -306,7 +328,7 @@ def pulling_additional_data(data_table, url : str, api_key : str):
 
         url = data_table['Appointment Links'][i]
       
-        output = APIF.call_additional_details(url = "https://api.company-information.service.gov.uk"  + url, api_key = api_key)
+        output = call_additional_details(url = url, api_key = api_key)
     
         if output is None:
             continue
@@ -355,7 +377,7 @@ def pulling_insolvency_data(company_house_numbers : list, url : str, api_key : s
 
         company_number = company_house_numbers[i]
 
-        output = APIF.call_api(url = url, api_key = api_key, company_number = company_number, company_info = '/insolvency')
+        output = call_api(url = url, api_key = api_key, company_number = company_number, company_info = '/insolvency')
     
         if output is None:
             continue
@@ -379,7 +401,10 @@ def pulling_insolvency_data(company_house_numbers : list, url : str, api_key : s
 
                 insolvency_dates.append(items_df_dates)
                 insolvency_prac.append(items_df_prac)
-            
+
+    # print(insolvency_dates)
+    # print(insolvency_prac)
+    
     insolvency_dates = pd.concat(insolvency_dates, ignore_index=True)
     insolvency_dates.columns = ['Insolvency Time Period', 'Date', 'Insolvency Type', 'Insolvency Number', 'Company Number']
     
