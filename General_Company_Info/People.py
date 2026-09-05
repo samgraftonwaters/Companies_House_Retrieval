@@ -1,7 +1,6 @@
-import requests
 import pandas as pd
 import numpy as np
-import time
+from datetime import datetime
 
 import Call_API_Functions as CAF
 
@@ -45,7 +44,7 @@ def get_officers_data(companies : list, url : str, api_key : str, save_file : bo
     print(people_df.head(10))
 
     if save_file == True:
-        people_df.to_csv('Company_Officers_Table.csv', sep = ',', index = False)
+        people_df.to_csv(f'saved_tables/Company_Officers_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(people_df)
 
@@ -84,7 +83,7 @@ def get_significant_control_data(companies : list, url : str, api_key : str, sav
     print(sig_control_df.head(5))
 
     if save_file == True:
-        sig_control_df.to_csv('Company_Sig_Control_Table.csv', sep = ',', index = False)
+        sig_control_df.to_csv(f'saved_tables/Company_Sig_Control_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(sig_control_df)
 
@@ -120,7 +119,7 @@ def get_peoples_details(companies : list, url : str, api_key : str, save_file : 
     people_details_df.head(5)
 
     if save_file == True:
-        people_details_df.to_csv('Org_Sig_Control_Current_Previous_Orgs.csv', sep = ',', index = False)
+        people_details_df.to_csv(f'saved_tables/Org_Sig_Control_Current_Previous_Orgs_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(people_details_df)
 
@@ -171,7 +170,7 @@ def get_count_people_per_orgs(people_details_df, save_file = False):
     print(people_orgs_count.head(5))
 
     if save_file == True:
-        people_orgs_count.to_csv('Count_Company_People_Assigned.csv', sep = ',', index = False)
+        people_orgs_count.to_csv(f'saved_tables/Count_Company_People_Assigned_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(people_orgs_count)
 

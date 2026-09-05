@@ -34,9 +34,6 @@ def get_company_finances(companies, url, api_key, save_file = False):
     print(finance_data_single_table.info())
     finance_data = finance_data_single_table.copy()
 
-    if save_file == True:
-        finance_data.to_csv('intermediate_test.csv', sep = ',', index = False)
-
     finance_data = FTFF.final_table_formatting(dataframe = finance_data, save_file = False)
 
 if __name__ == '__main__':

@@ -1,7 +1,6 @@
-import requests
 import pandas as pd
 import numpy as np
-import time
+from datetime import datetime
 
 import Call_API_Functions as CAF
 
@@ -45,9 +44,9 @@ def get_insolvency_data(companies : list, url : str, api_key : str, save_file : 
     insolvency_metrics = merged.rename({'Companies House Number': 'Company Number'}, axis = 1)
 
     if save_file == True:
-        insolvency_metrics.to_csv('Count_Insolvency_Details.csv', sep = ',', index = False)
-        insolvency_practitioners.to_csv('Insolvency_Practitioners.csv', sep = ',', index = False)
-        insolvency_dates.to_csv('Insolvency_Dates_Types.csv', sep = ',', index = False)
+        insolvency_metrics.to_csv(f'saved_tables/Count_Insolvency_Details_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        insolvency_practitioners.to_csv(f'saved_tables/Insolvency_Practitioners_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        insolvency_dates.to_csv(f'saved_tables/Insolvency_Dates_Types_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(insolvency_metrics)
 

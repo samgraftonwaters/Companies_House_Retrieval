@@ -1,7 +1,6 @@
-import requests
 import pandas as pd
 import numpy as np
-import time
+from datetime import datetime
 
 import Call_API_Functions as CAF
 
@@ -22,7 +21,7 @@ def get_charges_data(companies, url, api_key, save_file = False):
     print(charges.head(5))
 
     if save_file == True:
-        charges.to_csv('Company_Charges_Table.csv', sep = ',', index = False)
+        charges.to_csv(f'saved_tables/Company_Charges_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
     return(charges)
 
 def get_transactions_data(charges, api_key, save_file = False):
@@ -31,7 +30,7 @@ def get_transactions_data(charges, api_key, save_file = False):
 
     print(transactions.head(5))
     if save_file == True:
-        transactions.to_csv('Company_Transactions_Table.csv', sep = ',', index = False)
+        transactions.to_csv(f'saved_tables/Company_Transactions_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
     return(transactions)
 
 def merge_charges_transactions(charges, transactions, save_file = False):
@@ -43,7 +42,7 @@ def merge_charges_transactions(charges, transactions, save_file = False):
     charges_transactions.head(2)
 
     if save_file == True:
-        charges_transactions.to_csv('Company_Charges_Transactions_Table.csv', sep = ',', index = False)
+        charges_transactions.to_csv(f'saved_tables/Company_Charges_Transactions_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(charges_transactions)
 
@@ -87,7 +86,7 @@ def get_number_charges(charges, save_file = False):
     print(number_charges.head(5))
 
     if save_file == True:
-        number_charges.to_csv('Company_Number_Prop_Charges.csv',  sep = ',', index = False)
+        number_charges.to_csv(f'saved_tables/Company_Number_Prop_Charges_{datetime.now().strftime('%d-%b-%Y')}.csv',  sep = ',', index = False)
 
     return(number_charges)
 

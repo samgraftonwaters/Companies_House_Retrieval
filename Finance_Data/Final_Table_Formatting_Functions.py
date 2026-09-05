@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
-import re
-import time
+from datetime import datetime
 
 def updating_missing_columns(df):
 
@@ -174,6 +173,6 @@ def final_table_formatting(dataframe, save_file = False):
 
     if save_file == True:
 
-        dataframe.to_csv('Cleaned_Output_test_newOrgs_11.csv', sep = ',', index = False)
+        dataframe.to_csv(f'saved_tables/Finance_data_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(dataframe)

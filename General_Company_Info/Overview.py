@@ -1,7 +1,6 @@
-import requests
 import pandas as pd
 import numpy as np
-import time
+from datetime import datetime
 
 import Call_API_Functions as CAF
 
@@ -46,7 +45,7 @@ def get_overview_data(companies : list, url : str, api_key : str, save_file : bo
     print(overview_df.head())
 
     if save_file == True:
-        overview_df.to_csv('Company_Overview_Table.csv', sep = ',', index = False)
+        overview_df.to_csv(f'saved_tables/Company_Overview_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(overview_df)
 
