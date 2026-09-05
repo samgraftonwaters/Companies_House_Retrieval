@@ -263,8 +263,6 @@ def pulling_transactions_data(charges_df, api_key : str):
     expanded
     
     companies = []
-
-    print(len(df), len(charges_df))
     
     for i in range(len(charges_df)):
 
