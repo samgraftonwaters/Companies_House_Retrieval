@@ -1,12 +1,9 @@
 import pandas as pd
 import numpy as np
-import re
-import time
 
 import Extracting_Data as ED
 import Final_Table_Formatting_Functions as FTFF
 import Final_Table_Functions as FTF
-import Creating_Final_Table as CFT
 
 def get_finance_data_single_table(data, csv_file_name, save_csv=True):
 
@@ -31,8 +28,6 @@ def get_finance_data_single_table(data, csv_file_name, save_csv=True):
         account_date = row['date']
         action_date = row['action_date']
         company_number = row['Company Number']
-
-        print(f'\nCOMPANY NUMBER:\n{company_number}\n{i}')
 
         reader = row.get('ixbrl_reader')
         if not callable(reader):

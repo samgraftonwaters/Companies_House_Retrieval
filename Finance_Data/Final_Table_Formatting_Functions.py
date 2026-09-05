@@ -123,3 +123,57 @@ def create_new_cols(df):
                                                     df["Action Date"].dt.year - 1)
 
     return(df)
+
+
+def final_table_formatting(dataframe, save_file = False):
+
+    int_cols = ['FixedAssets_Current', 'FixedAssets_Previous',
+                'CurrentAssets_Current', 'CurrentAssets_Previous', 'CashBankOnHand_Current', 'CashBankOnHand_Previous', 'Creditors_Within1Y_Current',
+                'Creditors_Within1Y_Previous', 'Creditors_After1Y_Current', 'Creditors_After1Y_Previous', 'Debtors_Current', 'Debtors_Previous',
+                'Equity_TotalEquity_Current', 'Equity_TotalEquity_Previous',  'NetAssetsLiabilities_Current', 'NetAssetsLiabilities_Previous',
+                'NetCurrentAssetsLiabilities_Current', 'NetCurrentAssetsLiabilities_Previous', 'TotalAssetsLessCurrentLiabilities_Current', 
+                'TotalAssetsLessCurrentLiabilities_Previous', 'TotalInventories_Current', 'TotalInventories_Previous', 'Equity_RetainedEarnings_Current',
+                'Equity_RetainedEarnings_Previous', 'Equity_ShareCapital_Current', 'Equity_ShareCapital_Previous','Equity_Other_Current',
+                'Equity_Other_Previous', 'Equity_RevaluationReserve_Current', 'Equity_RevaluationReserve_Previous', 'PropertyPlantEquipment_Current',
+                'PropertyPlantEquipment_Previous']
+
+    float_cols = ['AverageNumberEmployeesDuringPeriod_Current', 'AverageNumberEmployeesDuringPeriod_Previous']
+
+    dataframe = change_data_types(df = dataframe, columns_to_change = int_cols, to_type = 'int')
+    dataframe = change_data_types(df = dataframe, columns_to_change = float_cols, to_type = 'float')
+    dataframe.info()
+
+    dataframe = updating_missing_columns(df = dataframe) 
+    dataframe = correct_number_employers(df = dataframe) 
+
+    dataframe = update_columns_if_similar_values(df = dataframe)
+
+    print(dataframe.head(20))
+    print(dataframe.info())
+
+    dataframe = reoreder_rename_cols(df = dataframe)
+
+    date_cols_year = ['Account Date', 'Action Date']
+    date_cols_day = ['Period Start Date', 'Period End Date', 'Balance Sheet Date']
+
+    int_cols = ['Average Number Employees Current', 'Average Number Employees Previous', 'Fixed Assets Current', 'Fixed Assets Previous', 
+                'Current Assets Current', 'Current Assets Previous', 'Cash Bank On Hand Current', 'Cash Bank On Hand Previous', 
+                'Creditors Within 1Y Current', 'Creditors Within 1Y Previous', 'Creditors After 1Y Current', 'Creditors After 1Y Previous',  
+                'Debtors Current', 'Debtors Previous', 'Total Equity Current', 'Total Equity Previous', 'Net Assets Liabilities Current', 
+                'Net Assets Liabilities Previous', 'Net Current Assets Liabilities Current', 'NetCurrent Assets Liabilities Previous', 
+                'Total Assets Less Liabilities Current', 'Total Assets Less Liabilities Previous']
+
+    dataframe = change_data_types(df = dataframe, columns_to_change = date_cols_year, to_type = 'date', date_first = 'year')
+    dataframe = change_data_types(df = dataframe, columns_to_change = date_cols_day, to_type = 'date', date_first = 'day')
+    dataframe = change_data_types(df = dataframe, columns_to_change = int_cols, to_type = 'int')
+
+    dataframe = create_new_cols(df = dataframe)
+
+    print(dataframe.head(20))
+    print(dataframe.info())
+
+    if save_file == True:
+
+        dataframe.to_csv('Cleaned_Output_test_newOrgs_11.csv', sep = ',', index = False)
+
+    return(dataframe)
