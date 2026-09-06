@@ -28,6 +28,8 @@ def get_insolvency_data(companies : list, url : str, api_key : str, save_file : 
 
     insolvency_dates, insolvency_practitioners = CAF.pulling_insolvency_data(company_house_numbers = companies, url = url,  api_key = api_key)
 
+    print(len(insolvency_dates), len(insolvency_practitioners))
+        
     number_insolvencies = insolvency_dates.groupby(['Company Number'])['Insolvency Number'].max().reset_index(name = 'Total Number Insolvencies')
     number_insolvencies.columns = ['Companies House Number', 'Total Number Insolvencies']
     number_insolvencies_types = insolvency_dates.groupby(['Company Number', 'Insolvency Type']).size().unstack(fill_value=0).reindex(fill_value=0).reset_index()

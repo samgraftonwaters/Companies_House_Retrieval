@@ -1,0 +1,13 @@
+name: Companies_House_Retrieval
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.12.7
+  - pandas=2.2.2
+  - numpy=1.26.4
+  - requests=2.32.3
+  - beautifulsoup4=4.12.3
+
+  #conda env create -f environment.yml
+  #conda activate Companies_House_Retrieval

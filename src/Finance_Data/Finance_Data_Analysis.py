@@ -13,8 +13,6 @@ import ast
 config = configparser.ConfigParser()
 config.read("src/config.ini")
 
-number_of_years = 5
-
 def get_company_finances(companies, url, api_key, number_of_years, save_file = False):
 
     data = ED.pull_finance_data_from_api(company_house_numbers = companies, url = url, api_key = api_key)

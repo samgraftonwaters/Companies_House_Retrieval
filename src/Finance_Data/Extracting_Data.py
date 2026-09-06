@@ -1,7 +1,5 @@
 import requests
 import pandas as pd
-import numpy as np
-import re
 import time
 from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 from html import unescape

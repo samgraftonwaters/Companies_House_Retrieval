@@ -5,10 +5,6 @@ import pandas as pd
 import ast
 import configparser
 
-print(configparser.__version__)
-print(ast.__version__)
-print(pd.__version__)
-
 config = configparser.ConfigParser()
 config.read("src/config.ini")
 
