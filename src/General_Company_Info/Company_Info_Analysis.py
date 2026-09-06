@@ -1,8 +1,3 @@
-import requests
-import pandas as pd
-import numpy as np
-import time
-
 from General_Company_Info import Overview
 from General_Company_Info import People
 from General_Company_Info import Charges_Transactions as CT

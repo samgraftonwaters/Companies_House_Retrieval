@@ -1,10 +1,10 @@
 import pandas as pd
-import numpy as np
 from datetime import datetime
-import configparser
-import ast
+
 from General_Company_Info import Call_API_Functions as CAF
 
+import configparser
+import ast
 config = configparser.ConfigParser()
 config.read("src/config.ini")
 
@@ -13,7 +13,6 @@ def get_charges_data(companies, url, api_key, save_file = False):
     charges = CAF.pulling_charge_data(company_house_numbers = companies, url = url,  api_key = api_key)
 
     charges['Charge Number'] = charges['Charge Number'].astype(int)
-    print(charges.head(5))
 
     if save_file == True:
         charges.to_csv(f'saved_tables/Company_Charges_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
@@ -23,7 +22,6 @@ def get_transactions_data(charges, api_key, save_file = False):
 
     transactions = CAF.pulling_transactions_data(charges_df = charges, api_key = api_key)
 
-    print(transactions.head(5))
     if save_file == True:
         transactions.to_csv(f'saved_tables/Company_Transactions_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
     return(transactions)
@@ -77,12 +75,10 @@ def get_number_charges(charges, save_file = False):
     number_charges['Debenture Proportion'] = number_charges['Debenture']/number_charges['Total Number Charges']
     number_charges['Other (types) Proportion'] = number_charges['Other (types)']/number_charges['Total Number Charges']
 
-    print(number_charges.columns)
-    print(number_charges.head(5))
-
     if save_file == True:
         number_charges.to_csv(f'saved_tables/Company_Number_Prop_Charges_{datetime.now().strftime('%d-%b-%Y')}.csv',  sep = ',', index = False)
 
+    print('Charges & Transactions Analysis Completed')
     return(number_charges)
 
 if __name__ == '__main__':

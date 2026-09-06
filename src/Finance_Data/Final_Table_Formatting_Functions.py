@@ -147,9 +147,6 @@ def final_table_formatting(dataframe, save_file = False):
 
     dataframe = update_columns_if_similar_values(df = dataframe)
 
-    print(dataframe.head(20))
-    print(dataframe.info())
-
     dataframe = reoreder_rename_cols(df = dataframe)
 
     date_cols_year = ['Account Date', 'Action Date']
@@ -167,9 +164,6 @@ def final_table_formatting(dataframe, save_file = False):
     dataframe = change_data_types(df = dataframe, columns_to_change = int_cols, to_type = 'int')
 
     dataframe = create_new_cols(df = dataframe)
-
-    print(dataframe.head(20))
-    print(dataframe.info())
 
     if save_file == True:
 

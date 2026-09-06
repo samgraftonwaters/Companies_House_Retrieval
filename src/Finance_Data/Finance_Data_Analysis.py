@@ -32,6 +32,8 @@ def get_company_finances(companies, url, api_key, number_of_years, save_file = F
 
     finance_data = FTFF.final_table_formatting(dataframe = finance_data, save_file = False)
 
+    print('Finance Analysis Complete')
+
 if __name__ == '__main__':
 
     companies = ast.literal_eval(config['COMPANIES']['companies'])

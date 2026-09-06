@@ -178,9 +178,6 @@ def get_accounts_data(data, api_key, number_of_years):
     else:
         accounts_update = pd.DataFrame()
 
-    print(len(accounts_update))
-    print(accounts_update.columns)
-
     return(accounts_update)
 
 

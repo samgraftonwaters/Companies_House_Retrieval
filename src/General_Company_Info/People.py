@@ -27,17 +27,12 @@ def get_officers_data(companies : list, url : str, api_key : str, save_file : bo
     """
 
     people_full_df = CAF.pulling_people_data(company_house_numbers = companies, url = url,  api_key = api_key)
-    print(len(people_full_df))
-    print(people_full_df.info())
-    print(people_full_df.head(5))
 
     people_df = people_full_df.copy()
     people_df = people_df[['Company Number', 'Person Number', 'Name (Officers)', 'Officer Role', 'Appointed On', 'Pre 1992 Appointment', 'Identity Verification Statement Due',
                         'Resigned on', 'Resigned (Officers)', 'Active (Officers)']]
 
     people_df[['Surname (Officers)', 'Forename (Officers)']] = people_df['Name (Officers)'].str.split(',', n=1, expand=True)
-
-    print(people_df.head(10))
 
     if save_file == True:
         people_df.to_csv(f'saved_tables/Company_Officers_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
@@ -63,10 +58,6 @@ def get_significant_control_data(companies : list, url : str, api_key : str, sav
     """
     sig_control_full_df = CAF.pulling_sig_control_data(company_house_numbers = companies, url = url,  api_key = api_key)
 
-    print(len(sig_control_full_df))
-    print(sig_control_full_df.info())
-    print(sig_control_full_df.head(5))
-
     sig_control_full_df['Ceased'] = sig_control_full_df['Ceased'].astype(bool).where(sig_control_full_df['Ceased'].notna())
 
     sig_control_df = sig_control_full_df.copy()
@@ -75,8 +66,6 @@ def get_significant_control_data(companies : list, url : str, api_key : str, sav
                                  'Nature of Control', 'Identity Verification Statement Due From', 'Identity Verification Statement Due By']]
 
     sig_control_df['Surname (Significant Control)'] = sig_control_df['Surname (Significant Control)'].str.upper()
-
-    print(sig_control_df.head(5))
 
     if save_file == True:
         sig_control_df.to_csv(f'saved_tables/Company_Sig_Control_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
@@ -117,6 +106,7 @@ def get_peoples_details(companies : list, url : str, api_key : str, save_file : 
     if save_file == True:
         people_details_df.to_csv(f'saved_tables/Org_Sig_Control_Current_Previous_Orgs_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
+    print('People Analysis Completed')
     return(people_details_df)
 
 
@@ -136,8 +126,6 @@ def get_count_people_per_orgs(people_details_df, save_file = False):
     """
 
     people_orgs_df = people_details_df.copy()
-
-    print(people_orgs_df.columns)
 
     people_orgs_df = people_orgs_df[['Name (Person Details)', 'Officer Role (Person Details)', 'Company Number', 'Company Status', 'Resigned (Person Details)']]
     people_orgs_df = people_orgs_df.rename(columns = {'Name (Person Details)' : 'Name', 'Officer Role (Person Details)' : 'Role',
@@ -161,9 +149,6 @@ def get_count_people_per_orgs(people_details_df, save_file = False):
     merge_2 = pd.merge(count_status, count_resigned, on = 'Name', how = 'left')
 
     people_orgs_count = pd.merge(merge_1, merge_2, on = 'Name', how = 'left')
-
-    print(people_orgs_count.columns)
-    print(people_orgs_count.head(5))
 
     if save_file == True:
         people_orgs_count.to_csv(f'saved_tables/Count_Company_People_Assigned_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)

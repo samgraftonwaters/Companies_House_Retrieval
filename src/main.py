@@ -15,13 +15,13 @@ else:
     companies_number_col_name = config['INPUT']['column_name_company_number']
     companies = data[companies_number_col_name]
 
-url = config['LINKS']['url']
-api_key = config['LINKS']['api_key']
-save_file = config.getboolean('SAVEFILES', 'save_file')
-number_of_years = config.getint('FINANCES', 'number_of_years')
-
-print(url)
 if __name__ == '__main__':
+
+    url = config['LINKS']['url']
+    api_key = config['LINKS']['api_key']
+    save_file = config.getboolean('SAVEFILES', 'save_file')
+    number_of_years = config.getint('FINANCES', 'number_of_years')
+    
     FDA.get_company_finances(companies = companies, url = url, api_key = api_key, 
                              number_of_years = number_of_years, save_file = save_file)
     CIA.get_company_info(companies = companies, url = url, api_key = api_key, save_file = save_file)

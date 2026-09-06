@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 from datetime import datetime
 
 from General_Company_Info import Call_API_Functions as CAF
@@ -31,18 +29,15 @@ def get_overview_data(companies : list, url : str, api_key : str, save_file : bo
     bool_cols = ['Accounts Overdue', 'Next Accounts Overdue', 'Confirmation Statement Overdue']
     overview_full_df[bool_cols]  = overview_full_df[bool_cols].astype(bool).where(overview_full_df[bool_cols].notna())
 
-    print(len(overview_full_df))
-    print(overview_full_df.info())
-
     overview_df = overview_full_df.copy()
     overview_df = overview_df[['Company Number', 'Company Name', 'Company Status', 'Creation Date', 'Has Charges', 
                                             'Has Insolvency History', 'Registered Office in Dispute', 'Accounts Next Due', 'Accounts Overdue',
                                             'Next Accounts Overdue', 'Confirmation Statement Next Due', 'Confirmation Statement Overdue']]
-    print(overview_df.head())
 
     if save_file == True:
         overview_df.to_csv(f'saved_tables/Company_Overview_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
+    print('Overview Analysis Completed')
     return(overview_df)
 
 if __name__ == '__main__':

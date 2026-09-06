@@ -150,8 +150,6 @@ def get_finance_data_single_table(data, csv_file_name, save_csv=True):
     final = pd.concat(finance_data, ignore_index=True)
 
     final = final.reset_index(drop = True)
-    print(len(final.columns))
-    print(final.columns)
 
     if save_csv:
         final.to_csv(csv_file_name, sep=',', index=False)

@@ -400,19 +400,20 @@ def pulling_insolvency_data(company_house_numbers : list, url : str, api_key : s
                 insolvency_dates.append(items_df_dates)
                 insolvency_prac.append(items_df_prac)
 
-    # print(insolvency_dates)
-    # print(insolvency_prac)
-    
-    insolvency_dates = pd.concat(insolvency_dates, ignore_index=True)
-    insolvency_dates.columns = ['Insolvency Time Period', 'Date', 'Insolvency Type', 'Insolvency Number', 'Company Number']
-    
-    insolvency_prac = pd.concat(insolvency_prac, ignore_index=True)
-    print(insolvency_prac)
+    if not insolvency_dates:
+        print('No Companies with Insolvency Dates')
+        insolvency_dates = pd.DataFrame(None)
+    else:
+        insolvency_dates = pd.concat(insolvency_dates, ignore_index=True)
+        insolvency_dates.columns = ['Insolvency Time Period', 'Date', 'Insolvency Type', 'Insolvency Number', 'Company Number']
 
-    insolvency_prac = insolvency_prac.drop(['address_locality', 'address_region', 'address_postal_code', 'address_address_line_1', 'address_line_2', 'ceased_to_act_on'], axis = 1, errors='ignore')
-    insolvency_prac = insolvency_prac.rename(columns = {'name' : 'Practitioner Name', 'role' : 'Role', 'Type' : 'Insolvency Type', 'Number' : 'Insolvency Number', 'appointed_on' : 'Appointed On'})
+    if not insolvency_prac:
+        print('No Companies with Insolvency Practices')
+        insolvency_prac = pd.DataFrame(None)
+    else:   
+        insolvency_prac = pd.concat(insolvency_prac, ignore_index=True)
+        insolvency_prac = insolvency_prac.drop(['address_locality', 'address_region', 'address_postal_code', 'address_address_line_1', 'address_line_2', 'ceased_to_act_on'], axis = 1, errors='ignore')
+        insolvency_prac = insolvency_prac.rename(columns = {'name' : 'Practitioner Name', 'role' : 'Role', 'Type' : 'Insolvency Type', 'Number' : 'Insolvency Number', 'appointed_on' : 'Appointed On'})
  
-    print(insolvency_dates.head())
-    print(insolvency_prac.head())
     return(insolvency_dates, insolvency_prac)
     
