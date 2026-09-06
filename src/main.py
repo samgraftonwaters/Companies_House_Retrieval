@@ -4,9 +4,13 @@ from General_Company_Info import Company_Info_Analysis as CIA
 import pandas as pd
 import ast
 import configparser
-import os
+
+print(configparser.__version__)
+print(ast.__version__)
+print(pd.__version__)
+
 config = configparser.ConfigParser()
-config.read("config.ini")
+config.read("src/config.ini")
 
 if config.getboolean('COMPANIES', 'list') == True:
     companies = ast.literal_eval(config['COMPANIES']['companies'])
@@ -17,8 +21,9 @@ else:
 
 url = config['LINKS']['url']
 api_key = config['LINKS']['api_key']
-save_file = config['SAVEFILES']['save_file']
+save_file = config.getboolean('SAVEFILES', 'save_file')
 
-if __name__ == 'main':
+print(url)
+if __name__ == '__main__':
     FDA.get_company_finances(companies = companies, url = url, api_key = api_key, save_file = save_file)
     CIA.get_company_info(companies = companies, url = url, api_key = api_key, save_file = save_file)

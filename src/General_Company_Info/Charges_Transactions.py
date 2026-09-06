@@ -1,17 +1,12 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
-
+import configparser
+import ast
 from General_Company_Info import Call_API_Functions as CAF
 
-api_key = None
-url = "https://api.company-information.service.gov.uk/company/"
-
-companies = ['12773942', '11481000', '09752181', '05035690', '03712506', '02516363', '04860838', 
-             '11210637', '06987042', '01588942', '02740580', '02582268', '10921663', '10623473', 
-             '03864182', '02404983', '08313240', '10622354', '12043446', '11558635', '05852516', 
-             '06976037', '05167623', '08445134', '11452512', '05714286', '05271676', '07883905', 
-             '12299608', '03053472']
+config = configparser.ConfigParser()
+config.read("src/config.ini")
 
 def get_charges_data(companies, url, api_key, save_file = False):
 
@@ -91,6 +86,11 @@ def get_number_charges(charges, save_file = False):
     return(number_charges)
 
 if __name__ == '__main__':
+
+    companies = ast.literal_eval(config['COMPANIES']['companies'])
+    url = config['LINKS']['url']
+    api_key = config['LINKS']['api_key']
+    save_file = config.getboolean('SAVEFILES', 'save_file')
 
     charges = get_charges_data(companies, url, api_key, save_file = True)
     transactions = get_transactions_data(charges = charges, api_key = api_key, save_file = True)
