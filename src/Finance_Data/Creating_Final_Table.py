@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 
-import Extracting_Data as ED
-import Final_Table_Formatting_Functions as FTFF
-import Final_Table_Functions as FTF
+from Finance_Data import Extracting_Data as ED
+from Finance_Data import Final_Table_Formatting_Functions as FTFF
+from Finance_Data import Final_Table_Functions as FTF
 
 def get_finance_data_single_table(data, csv_file_name, save_csv=True):
 

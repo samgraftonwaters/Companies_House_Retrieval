@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-import Call_API_Functions as CAF
+from General_Company_Info import Call_API_Functions as CAF
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"

@@ -3,10 +3,10 @@ import pandas as pd
 import numpy as np
 import time
 
-import Overview
-import People
-import Charges_Transactions as CT
-import Insolvency
+from General_Company_Info import Overview
+from General_Company_Info import People
+from General_Company_Info import Charges_Transactions as CT
+from General_Company_Info import Insolvency
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"

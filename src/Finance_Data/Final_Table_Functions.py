@@ -3,7 +3,7 @@ import numpy as np
 import re
 import time
 
-import Extracting_Data as ED
+from Finance_Data import Extracting_Data as ED
 
 def map_period(df, mask_col = 'period_mapped', group_col = 'New_Name', name_col = 'period_date_parsed', rank_col = 'period_rank'):
 

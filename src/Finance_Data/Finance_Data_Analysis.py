@@ -4,9 +4,9 @@ import time
 import warnings
 pd.set_option('display.max_colwidth', None)
 
-import Extracting_Data as ED
-import Final_Table_Formatting_Functions as FTFF
-import Creating_Final_Table as CFT
+from Finance_Data import Extracting_Data as ED
+from Finance_Data import Final_Table_Formatting_Functions as FTFF
+from Finance_Data import Creating_Final_Table as CFT
 
 api_key = None
 url = "https://api.company-information.service.gov.uk/company/"
