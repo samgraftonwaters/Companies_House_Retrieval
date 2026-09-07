@@ -35,7 +35,7 @@ def get_officers_data(companies : list, url : str, api_key : str, save_file : bo
     people_df[['Surname (Officers)', 'Forename (Officers)']] = people_df['Name (Officers)'].str.split(',', n=1, expand=True)
 
     if save_file == True:
-        people_df.to_csv(f'saved_tables/Company_Officers_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        people_df.to_csv(f'src/General_Company_Info/saved_tables/Company_Officers_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(people_df)
 
@@ -68,7 +68,7 @@ def get_significant_control_data(companies : list, url : str, api_key : str, sav
     sig_control_df['Surname (Significant Control)'] = sig_control_df['Surname (Significant Control)'].str.upper()
 
     if save_file == True:
-        sig_control_df.to_csv(f'saved_tables/Company_Sig_Control_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        sig_control_df.to_csv(f'src/General_Company_Info/saved_tables/Company_Sig_Control_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(sig_control_df)
 
@@ -104,7 +104,7 @@ def get_peoples_details(companies : list, url : str, api_key : str, save_file : 
     people_details_df.head(5)
 
     if save_file == True:
-        people_details_df.to_csv(f'saved_tables/Org_Sig_Control_Current_Previous_Orgs_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        people_details_df.to_csv(f'src/General_Company_Info/saved_tables/Org_Sig_Control_Current_Previous_Orgs_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     print('People Analysis Completed')
     return(people_details_df)
@@ -151,16 +151,17 @@ def get_count_people_per_orgs(people_details_df, save_file = False):
     people_orgs_count = pd.merge(merge_1, merge_2, on = 'Name', how = 'left')
 
     if save_file == True:
-        people_orgs_count.to_csv(f'saved_tables/Count_Company_People_Assigned_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        people_orgs_count.to_csv(f'src/General_Company_Info/saved_tables/Count_Company_People_Assigned_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(people_orgs_count)
 
 if __name__ == '__main__':
 
     if config['INPUT']['input_filename'] != 'None':
-        data = pd.read_csv(f'input_data_tables/{config['INPUT']['input_filename']}.csv')
+        data = pd.read_csv(f'src/input_data_tables/{config['INPUT']['input_filename']}.csv')
         companies_number_col_name = config['INPUT']['column_name_company_number']
-        companies = data[companies_number_col_name]
+        companies = data[companies_number_col_name].astype("string")
+
     else:
         companies = ast.literal_eval(config['INPUT']['companies_list'])
     url = config['LINKS']['url']

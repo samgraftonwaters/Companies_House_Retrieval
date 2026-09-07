@@ -36,7 +36,7 @@ def get_overview_data(companies : list, url : str, api_key : str, save_file : bo
                                             'Next Accounts Overdue', 'Confirmation Statement Next Due', 'Confirmation Statement Overdue']]
 
     if save_file == True:
-        overview_df.to_csv(f'saved_tables/Company_Overview_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        overview_df.to_csv(f'src/General_Company_Info/saved_tables/Company_Overview_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     print('Overview Analysis Completed')
     return(overview_df)
@@ -44,9 +44,10 @@ def get_overview_data(companies : list, url : str, api_key : str, save_file : bo
 if __name__ == '__main__':
 
     if config['INPUT']['input_filename'] != 'None':
-        data = pd.read_csv(f'input_data_tables/{config['INPUT']['input_filename']}.csv')
+        data = pd.read_csv(f'src/input_data_tables/{config['INPUT']['input_filename']}.csv')
         companies_number_col_name = config['INPUT']['column_name_company_number']
-        companies = data[companies_number_col_name]
+        companies = data[companies_number_col_name].astype("string")
+
     else:
         companies = ast.literal_eval(config['INPUT']['companies_list'])
     url = config['LINKS']['url']

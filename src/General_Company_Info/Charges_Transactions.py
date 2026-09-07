@@ -15,7 +15,7 @@ def get_charges_data(companies, url, api_key, save_file = False):
     charges['Charge Number'] = charges['Charge Number'].astype(int)
 
     if save_file == True:
-        charges.to_csv(f'saved_tables/Company_Charges_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        charges.to_csv(f'src/General_Company_Info/saved_tables/Company_Charges_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
     return(charges)
 
 def get_transactions_data(charges, api_key, save_file = False):
@@ -23,7 +23,7 @@ def get_transactions_data(charges, api_key, save_file = False):
     transactions = CAF.pulling_transactions_data(charges_df = charges, api_key = api_key)
 
     if save_file == True:
-        transactions.to_csv(f'saved_tables/Company_Transactions_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        transactions.to_csv(f'src/General_Company_Info/saved_tables/Company_Transactions_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
     return(transactions)
 
 def merge_charges_transactions(charges, transactions, save_file = False):
@@ -35,7 +35,7 @@ def merge_charges_transactions(charges, transactions, save_file = False):
     charges_transactions.head(2)
 
     if save_file == True:
-        charges_transactions.to_csv(f'saved_tables/Company_Charges_Transactions_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        charges_transactions.to_csv(f'src/General_Company_Info/saved_tables/Company_Charges_Transactions_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(charges_transactions)
 
@@ -76,7 +76,7 @@ def get_number_charges(charges, save_file = False):
     number_charges['Other (types) Proportion'] = number_charges['Other (types)']/number_charges['Total Number Charges']
 
     if save_file == True:
-        number_charges.to_csv(f'saved_tables/Company_Number_Prop_Charges_{datetime.now().strftime('%d-%b-%Y')}.csv',  sep = ',', index = False)
+        number_charges.to_csv(f'src/General_Company_Info/saved_tables/Company_Number_Prop_Charges_{datetime.now().strftime('%d-%b-%Y')}.csv',  sep = ',', index = False)
 
     print('Charges & Transactions Analysis Completed')
     return(number_charges)
@@ -84,9 +84,10 @@ def get_number_charges(charges, save_file = False):
 if __name__ == '__main__':
 
     if config['INPUT']['input_filename'] != 'None':
-        data = pd.read_csv(f'input_data_tables/{config['INPUT']['input_filename']}.csv')
+        data = pd.read_csv(f'src/input_data_tables/{config['INPUT']['input_filename']}.csv')
         companies_number_col_name = config['INPUT']['column_name_company_number']
-        companies = data[companies_number_col_name]
+        companies = data[companies_number_col_name].astype("string")
+
     else:
         companies = ast.literal_eval(config['INPUT']['companies_list'])
     url = config['LINKS']['url']

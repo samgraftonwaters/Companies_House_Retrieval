@@ -167,6 +167,6 @@ def final_table_formatting(dataframe, save_file = False):
 
     if save_file == True:
 
-        dataframe.to_csv(f'saved_tables/Finance_data_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        dataframe.to_csv(f'src/Finance_Data/saved_tables/Finance_data_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     return(dataframe)

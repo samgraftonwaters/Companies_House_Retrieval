@@ -39,9 +39,9 @@ def get_insolvency_data(companies : list, url : str, api_key : str, save_file : 
     insolvency_metrics = merged.rename({'Companies House Number': 'Company Number'}, axis = 1)
 
     if save_file == True:
-        insolvency_metrics.to_csv(f'saved_tables/Count_Insolvency_Details_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
-        insolvency_practitioners.to_csv(f'saved_tables/Insolvency_Practitioners_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
-        insolvency_dates.to_csv(f'saved_tables/Insolvency_Dates_Types_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        insolvency_metrics.to_csv(f'src/General_Company_Info/saved_tables/Count_Insolvency_Details_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        insolvency_practitioners.to_csv(f'src/General_Company_Info/saved_tables/Insolvency_Practitioners_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+        insolvency_dates.to_csv(f'src/General_Company_Info/saved_tables/Insolvency_Dates_Types_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
 
     print('Insolvency Analysis Completed')
     return(insolvency_metrics)
@@ -49,9 +49,10 @@ def get_insolvency_data(companies : list, url : str, api_key : str, save_file : 
 if __name__ == '__main__':
 
     if config['INPUT']['input_filename'] != 'None':
-        data = pd.read_csv(f'input_data_tables/{config['INPUT']['input_filename']}.csv')
+        data = pd.read_csv(f'src/input_data_tables/{config['INPUT']['input_filename']}.csv')
         companies_number_col_name = config['INPUT']['column_name_company_number']
-        companies = data[companies_number_col_name]
+        companies = data[companies_number_col_name].astype("string")
+
     else:
         companies = ast.literal_eval(config['INPUT']['companies_list'])
     url = config['LINKS']['url']
