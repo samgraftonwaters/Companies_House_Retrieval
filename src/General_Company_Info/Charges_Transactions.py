@@ -83,7 +83,12 @@ def get_number_charges(charges, save_file = False):
 
 if __name__ == '__main__':
 
-    companies = ast.literal_eval(config['COMPANIES']['companies'])
+    if config['INPUT']['input_filename'] != 'None':
+        data = pd.read_csv(f'input_data_tables/{config['INPUT']['input_filename']}.csv')
+        companies_number_col_name = config['INPUT']['column_name_company_number']
+        companies = data[companies_number_col_name]
+    else:
+        companies = ast.literal_eval(config['INPUT']['companies_list'])
     url = config['LINKS']['url']
     api_key = config['LINKS']['api_key']
     save_file = config.getboolean('SAVEFILES', 'save_file')

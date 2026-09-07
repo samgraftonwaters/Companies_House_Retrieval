@@ -8,12 +8,12 @@ import configparser
 config = configparser.ConfigParser()
 config.read("src/config.ini")
 
-if config.getboolean('COMPANIES', 'list') == True:
-    companies = ast.literal_eval(config['COMPANIES']['companies'])
-else:
+if config['INPUT']['input_filename'] != 'None':
     data = pd.read_csv(f'input_data_tables/{config['INPUT']['input_filename']}.csv')
     companies_number_col_name = config['INPUT']['column_name_company_number']
     companies = data[companies_number_col_name]
+else:
+    companies = ast.literal_eval(config['INPUT']['companies_list'])
 
 if __name__ == '__main__':
 
