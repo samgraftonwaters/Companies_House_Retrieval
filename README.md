@@ -16,10 +16,20 @@ The scripts are split into two sections, Finances and other Information. These a
 
 
 ## Other Information
+The 'main' script in this folder is **'Company_Info_Analysis.py'**. This calls the following scripts (which can be run individually): **'Overview.py'**, **'People'**, **'Charges_Transactions.py'**, and **'Insolvency'**. The following table outlines what information each script obtains.
 
+| Script | Description | Output filenames |
+| --- | --- | --- |
+| **'Company_Info_Analysis.py'** | | |
+| **'Overview.py'** | | Company_Overview_Table_DATE.csv |
+| **'People'** | | Company_Officers_Table_DATE.csv, Company_Sig_Control_Table_DATE.csv Org_Sig_Control_Current_Previous_Orgs_DATE.csv, Count_Company_People_Assigned_DATE.csv |
+| **'Charges_Transactions.py'** | | |
+| **'Insolvency'** | | |
+
+Note, each file name includes the date when the script was run. In the above table, this is denoted with 'DATE'.
 
 ## How to use this Repository
-The main script to run is **'Main.py'**. Here it will call the main functions in the **'Finance_Data_Analysis.py'** and **'Company_Info_Analysis'**, which subsequently run the functions in their respective scripts. Altenatively, you can run either of the **'Finance_Data_Analysis.py'** or **'Company_Info_Analysis'** scripts, or the individual scripts, e.g. if you just wanted to get the Overview data you can run the **'Overview.py'** script.
+The main script to run is **'Main.py'**. Here it will call the main functions in the **'Finance_Data_Analysis.py'** and **'Company_Info_Analysis.py'**, which subsequently run the functions in their respective scripts. Altenatively, you can run either of the **'Finance_Data_Analysis.py'** or **'Company_Info_Analysis.py'** scripts, or the individual scripts, e.g. if you just wanted to get the Overview data you can run the **'Overview.py'** script.
 
 Before running a script however, you will need to update the variables in the **config.ini** file.
 
@@ -32,8 +42,8 @@ input_filename | Name of input file (csv) that contains the Companies House numb
 column_name_company_number | Name of the column that contains the Company House numbers | None Company_House_Numbers |
 companies_list  | Alteratively to a csv file, you can put the Company House numbers in a list. Put each number within quotations | ['12345678', '12345679', '12345670'] |
 number_of_years | Number of years worth of financial data (if available) | 5, 10, 1 |
-url | URL link to call APIs | https://api.company-information.service.gov.uk/company/
-api_key | API authentication credentials to be sent with each request. Unique to each individual and can be created at https://developer.company-information.service.gov.uk | **UNIQUE CODE**
+url | URL link to call APIs. This should not be changed | https://api.company-information.service.gov.uk/company/
+api_key | API authentication credentials to be sent with each request. Unique to each individual and can be created at https://developer.company-information.service.gov.uk. Outputs will not be obtained unless this is filled in. | **UNIQUE CODE**
 save_file | If True, the scripts will save the respective output files (csv) with the relavent data and information| True/False
 
 ## Package requirements
