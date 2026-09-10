@@ -102,8 +102,8 @@ def reoreder_rename_cols(df):
                 'Balance Sheet Date', 'Average Number Employees Current', 'Average Number Employees Previous', 'Fixed Assets Current', 
                 'Fixed Assets Previous', 'Current Assets Current', 'Current Assets Previous', 'Cash Bank On Hand Current', 'Cash Bank On Hand Previous', 
                 'Creditors Within 1Y Current', 'Creditors Within 1Y Previous', 'Creditors After 1Y Current', 'Creditors After 1Y Previous',  
-                'Debtors Current', 'Debtors Previous', 'Total Equity Current', 'Total Equity Previous', 'Net Assets Liabilities Current', 
-                'Net Assets Liabilities Previous', 'Net Current Assets Liabilities Current', 'NetCurrent Assets Liabilities Previous', 
+                'Debtors Current', 'Debtors Previous', 'Total Equity Current', 'Total Equity Previous', 'Net Assets Current', 
+                'Net Assets Previous', 'Net Current Assets Current', 'NetCurrent Assets Previous', 
                 'Total Assets Less Liabilities Current', 'Total Assets Less Liabilities Previous']
 
     df.columns = rename_cols
@@ -155,8 +155,8 @@ def final_table_formatting(dataframe, save_file = False):
     int_cols = ['Average Number Employees Current', 'Average Number Employees Previous', 'Fixed Assets Current', 'Fixed Assets Previous', 
                 'Current Assets Current', 'Current Assets Previous', 'Cash Bank On Hand Current', 'Cash Bank On Hand Previous', 
                 'Creditors Within 1Y Current', 'Creditors Within 1Y Previous', 'Creditors After 1Y Current', 'Creditors After 1Y Previous',  
-                'Debtors Current', 'Debtors Previous', 'Total Equity Current', 'Total Equity Previous', 'Net Assets Liabilities Current', 
-                'Net Assets Liabilities Previous', 'Net Current Assets Liabilities Current', 'NetCurrent Assets Liabilities Previous', 
+                'Debtors Current', 'Debtors Previous', 'Total Equity Current', 'Total Equity Previous', 'Net Assets Current', 
+                'Net Assets Previous', 'Net Current Assets Current', 'Net Current Assets Previous', 
                 'Total Assets Less Liabilities Current', 'Total Assets Less Liabilities Previous']
 
     dataframe = change_data_types(df = dataframe, columns_to_change = date_cols_year, to_type = 'date', date_first = 'year')
