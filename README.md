@@ -13,18 +13,18 @@ The scripts created in this Repository use APIs to call the relavent information
 The scripts are split into two sections, Finances and other Information. These are discribed below.
 
 ## Finances
-
+The 'main' script in the 'Finance Data' folder is **'Finance_Data_Analysis.py'**. This calls the rest of the scripts in this folder that only contain functions to obtain the financial information for each company. The data is pulled from the 'Filing History' tab for each Company, where the accounts files are filtered for. The scripts here call the *iXBRL* files and extract the information automatically from these files. All the data is then then combined into one final financial table.
 
 ## Other Information
-The 'main' script in this folder is **'Company_Info_Analysis.py'**. This calls the following scripts (which can be run individually): **'Overview.py'**, **'People'**, **'Charges_Transactions.py'**, and **'Insolvency'**. The following table outlines what information each script obtains.
+The 'main' script in 'General Company Info' folder is **'Company_Info_Analysis.py'**. This calls the following scripts (which can be run individually): **'Overview.py'**, **'People'**, **'Charges_Transactions.py'**, and **'Insolvency'**. The following table outlines what information each script obtains.
 
-| Script | Description | Output filenames |
-| --- | --- | --- |
-| **'Company_Info_Analysis.py'** | | |
-| **'Overview.py'** | | Company_Overview_Table_DATE.csv |
-| **'People'** | | Company_Officers_Table_DATE.csv, Company_Sig_Control_Table_DATE.csv Org_Sig_Control_Current_Previous_Orgs_DATE.csv, Count_Company_People_Assigned_DATE.csv |
-| **'Charges_Transactions.py'** | | |
-| **'Insolvency'** | | |
+| Script | Description |
+| --- | --- |
+| **'Company_Info_Analysis.py'** | Script to gain all information related to a company, based on the scripts outlined below. |
+| **'Overview.py'** | This script returns the general overview of a company, such as its name, address and when it first registered with Companies House.
+| **'People'** | This script obtains the data related to people. Either the officers (details of people who work at the company), or those with a significant amount of control (e.g. shares or ownership). This script also returns the details of people associated with or have significant control on more than one company. |
+| **'Charges_Transactions.py'** | This script gets the information related to charges and other finanical transactions. Information around they types of charges and the proportions spent on each by the companies is also returned here. |
+| **'Insolvency'** | For any company that has been or is currently under insolvency problens, this script will get that information, in particular around those people involved (practitioners), along with dates and they type of financial or insolvency trouble.|
 
 Note, each file name includes the date when the script was run. In the above table, this is denoted with 'DATE'.
 
@@ -48,11 +48,9 @@ save_file | If True, the scripts will save the respective output files (csv) wit
 
 ## Package requirements
 The **'requirements.txt'** file contains the required package versions for this Repository. The version of Python to create these scripts was **Version 3.12.7**. To install the required packages, run the following:
-***pip install -r requirements.txt***
+- ***pip install -r requirements.txt***
 
 Alternatively, you can run the conda environment (yml file) using: 
-
-***conda env create -f environment.yml***
-
-***conda activate Companies_House_Retrieval***
+- ***conda env create -f environment.yml***
+- ***conda activate Companies_House_Retrieval***
 
