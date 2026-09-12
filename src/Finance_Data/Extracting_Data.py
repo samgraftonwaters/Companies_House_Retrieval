@@ -8,7 +8,23 @@ warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 pd.set_option('display.max_colwidth', None)
 
 def call_api(url, api_key, company_number, company_info, params = None):
+
+    """
+    Uses the Requests package to get the details from the Companies House API
+
+    Parameters:
+    -----------
+        url (str): url of the HTTP or API to obtain the infomation
+        api_key (str): Unique API authentication credentials to be sent with each request
+        company_number (str): Company's Companies House registered number
+        company_details (str): Details tab name for each company
+        params (dict): Used to add query parameters
     
+    Returns:
+    --------
+        The API response as a .json file, if the status of the request is 200 or 201, otherwise nothing.
+    
+    """
     response = requests.get(url = url + company_number + company_info, params=params, auth = (api_key, ""))
     time.sleep(0.05)
     
@@ -19,7 +35,21 @@ def call_api(url, api_key, company_number, company_info, params = None):
 
 
 def call_additional_details(url, api_key):
+
+    """
+    Uses the Requests package to obtain further details from the Companies House API
+
+    Parameters:
+    -----------
+        url (str): url of the HTTP or API to obtain the infomation
+        api_key (str): Unique API authentication credentials to be sent with each request
     
+    Returns:
+    --------
+        The API response as a .json file, if the status of the request is 200 or 201, otherwise nothing.
+    
+    """
+
     response = requests.get(url = url, auth = (api_key, ""))
     time.sleep(0.1)
     
