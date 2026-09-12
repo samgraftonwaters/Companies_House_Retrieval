@@ -7,6 +7,10 @@ import warnings
 warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 pd.set_option('display.max_colwidth', None)
 
+"""
+Note, some of these functions were created with the help of MS CoPilot
+"""
+
 def call_api(url, api_key, company_number, company_info, params = None):
 
     """
@@ -60,6 +64,21 @@ def call_additional_details(url, api_key):
     
 
 def pull_finance_data_from_api(company_house_numbers : list, url : str, api_key : str):
+
+    """
+    Uses the Requests package to get the finacial details from the Companies House API
+
+    Parameters:
+    -----------
+        company_house_numbers (str): Company's Companies House registered number
+        url (str): url of the HTTP or API to obtain the infomation
+        api_key (str): Unique API authentication credentials to be sent with each request
+    
+    Returns:
+    --------
+        Financial information for each company as a dataframe
+    
+    """
 
     required_columns = [
         'type', 'date', 'category', 'description', 'action_date', 'links_document_metadata', 'subcategory', 'paper_filed',
@@ -119,6 +138,19 @@ def pull_finance_data_from_api(company_house_numbers : list, url : str, api_key 
 
 def get_formats(doc_meta_url, api_key):
 
+    """
+    Determines if the accounts data contains a PDF or IXBRL files.
+
+    Parmeters:
+    ----------
+        doc_meta_url (str): metadata url link
+        api_key (str): Unique API authentication credentials to be sent with each request
+
+    Returns:
+    --------
+        Series containing columns to whether the data is from a PDF or IXBRL file
+    """
+
     try:
 
         if pd.isna(doc_meta_url) or not isinstance(doc_meta_url, str):
@@ -153,6 +185,19 @@ def get_formats(doc_meta_url, api_key):
 
 
 def make_ixbrl_reader(content_url, api_key):
+
+    """
+    Retrieve the iXBRL content from a URL.
+
+    Parameters:
+    ------------
+        content_url (str): URL of the IXBRL document to retrieve.
+        api_key (str): API key used for authentication.
+
+    Returns:
+        A callable that fetches the iXBRL document and returns its text.
+    """
+
     def reader():
         r = requests.get(
             content_url,
@@ -166,6 +211,23 @@ def make_ixbrl_reader(content_url, api_key):
 
 
 def get_accounts_data(data, api_key, number_of_years):
+
+    """
+    Obtains the financial details
+
+    Parameters:
+    -----------
+        data (dataframe): datatable that is taken from the Companies House 'filing history' tab
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+        number_of_years (int): Number of years the financial data is returned for. For example, if 5, then
+        5 years worth of data is obtained
+
+    Returns:
+    --------
+        accounts list for each company for the number of years requested
+    
+    """
+
     accounts_list = []
     
     for i, number in enumerate(data['Company Number'].unique()):
@@ -213,6 +275,18 @@ def get_accounts_data(data, api_key, number_of_years):
 
 def parse_ixbrl(html):
 
+    """
+    Get the financial data from the IXBRL HTML
+
+    Parameters:
+    -----------
+        (html): IXBRL html url for the Company
+
+    Returns:
+    --------
+        DataFrame with Company's financial data obtained through the IXBRL HTML
+    """
+
     soup = BeautifulSoup(html, "lxml", parse_only = None)
 
     data = []
@@ -244,6 +318,18 @@ def parse_ixbrl(html):
 
 
 def parse_html(html):
+
+    """
+    Get the financial data from the HTML
+
+    Parameters:
+    -----------
+        (html): html url for the Company
+
+    Returns:
+    --------
+        DataFrame with Company's financial data obtained through the HTML
+    """
 
     html = unescape(html)
 

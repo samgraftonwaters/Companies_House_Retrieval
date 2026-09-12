@@ -5,6 +5,10 @@ import time
 
 from Finance_Data import Extracting_Data as ED
 
+"""
+Note, these functions were created with the help of MS CoPilot
+"""
+
 def map_period(df, mask_col = 'period_mapped', group_col = 'New_Name', name_col = 'period_date_parsed', rank_col = 'period_rank'):
 
     mask = df[mask_col].isna()
