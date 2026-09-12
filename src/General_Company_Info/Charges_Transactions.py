@@ -8,7 +8,22 @@ import ast
 config = configparser.ConfigParser()
 config.read("src/config.ini")
 
-def get_charges_data(companies, url, api_key, save_file = False):
+def get_charges_data(companies : list, url : str, api_key : str, save_file : bool = False):
+
+    """
+    Obtain the information related to any charges
+    
+    Parameters:
+    -----------
+        companies (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe containing the data related to charges for the company
+    """
 
     charges = CAF.pulling_charge_data(company_house_numbers = companies, url = url,  api_key = api_key)
 
@@ -18,7 +33,21 @@ def get_charges_data(companies, url, api_key, save_file = False):
         charges.to_csv(f'src/General_Company_Info/saved_tables/Company_Charges_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
     return(charges)
 
-def get_transactions_data(charges, api_key, save_file = False):
+def get_transactions_data(charges, api_key : str, save_file : bool = False):
+
+    """
+    Obtain the information related to any transactions
+    
+    Parameters:
+    -----------
+        charges (dataframe): data table containing the charges infomation
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe containing the data related to transactions for the company
+    """
 
     transactions = CAF.pulling_transactions_data(charges_df = charges, api_key = api_key)
 
@@ -27,6 +56,20 @@ def get_transactions_data(charges, api_key, save_file = False):
     return(transactions)
 
 def merge_charges_transactions(charges, transactions, save_file = False):
+
+    """
+    Merges the charges and transactions datatables
+    
+    Parameters:
+    -----------
+        charges (dataframe): data table containing the charges infomation
+        tranactions (dataframe): data table containing the transactions infomation
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe with the combined charges and transactions data
+    """
 
     charges = charges.drop(['Transactions', 'Persons Entitled', 'Classification Type', 'Particulars Type'], axis = 1)
     transactions = transactions.drop(['Company Number'], axis = 1)
@@ -41,6 +84,20 @@ def merge_charges_transactions(charges, transactions, save_file = False):
 
 
 def get_number_charges(charges, save_file = False):
+
+    """
+    Counts the number of different types of charges for each Company, and calculates the proportions
+    
+    Parameters:
+    -----------
+        charges (dataframe): data table containing the charges infomation
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe with the count and proportions of each type of charge for each Company
+    
+    """
 
     number_charges = charges.copy()
     number_charges = number_charges.drop(['Charge Code', 'Delivered On', 'Created On', 'Persons Entitled', 'Transactions', 'Classification Type', 
