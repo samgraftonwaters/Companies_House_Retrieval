@@ -7,6 +7,22 @@ from Finance_Data import Final_Table_Functions as FTF
 
 def get_finance_data_single_table(data, csv_file_name, save_csv=True):
 
+    """
+    Uses the functions in 'Extracting_Data.py' and 'Final_Table_Functions.py' to obtain all the financial 
+    information associated with each company and return it in a final table.
+
+    Parameters:
+    -----------
+        data (DataFrame): Accounts datatable obtained through an API call to get the financial data.
+        csv_file_name (str): Name of the final csv file that stores all the financial data.
+        save_csv (bool): If True, then the csv file will be saved. Default = True. 
+
+    Returns:
+    --------
+        Data table with each Company's financial data that is stored on the Companies House website.
+    
+    """
+
     finance_data = []
 
     rows_list = [
@@ -63,13 +79,27 @@ def get_finance_data_single_table(data, csv_file_name, save_csv=True):
         if finance.empty:
             continue
 
+        def parse_date_safe(x):
+            try:
+                return pd.to_datetime(x, dayfirst=True, errors='coerce')
+            except:
+                return pd.NaT
+
+        def filter_group(g):
+            if len(g) == 1:
+                return g
+
+            be = g[~g["context"].str.contains(r"_|START|END", regex = True)]
+            return be if not be.empty else g.head(1)
+
+
         finance['Company_Number'] = company_number
 
         finance[['period_type', 'period_end', 'period_date', 'segment']] = finance['context'].apply(FTF.parse_context)
 
         finance = finance[(finance['period_end'] == 'END') | (finance['period_end'].isna())]
 
-        finance['period_date_parsed'] = finance['period_date'].apply(FTF.parse_date_safe)
+        finance['period_date_parsed'] = finance['period_date'].apply(parse_date_safe)
         
         finance['creditor_type'] = finance.apply(lambda row: FTF.extract_creditor_type(row['context'], row['name']), axis=1)
         finance['equity_type'] = finance.apply(lambda row: FTF.extract_equity_type(row['context'], row['name'], row['format']), axis = 1)
@@ -95,9 +125,7 @@ def get_finance_data_single_table(data, csv_file_name, save_csv=True):
 
         finance['Final_Name'] = finance['metric_name'] + '_' + finance['period_mapped']
 
-        # finance.to_csv(f'Column_Testing/UpdatedColumns_{company_number}_{i}.csv', sep = ',', index = False)
-        
-        finance = finance.groupby("Final_Name", group_keys=False, as_index=False).apply(FTF.filter_group, include_groups=False).reset_index(drop = True)      
+        finance = finance.groupby("Final_Name", group_keys=False, as_index=False).apply(filter_group, include_groups=False).reset_index(drop = True)      
         
         finance['Final_Name'] = finance['metric_name'] + '_' + finance['period_mapped']
 

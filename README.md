@@ -15,6 +15,8 @@ The scripts are split into two sections, Finances and other Information. These a
 ## Finances
 The 'main' script in the 'Finance Data' folder is **'Finance_Data_Analysis.py'**. This calls the rest of the scripts in this folder that only contain functions to obtain the financial information for each company. The data is pulled from the 'Filing History' tab for each Company, where the accounts files are filtered for. The scripts here call the *iXBRL* files and extract the information automatically from these files. All the data is then then combined into one final financial table.
 
+Disclaimer: Due to the complexity of getting the data, espcially compared to the other information (see below), MS CoPilot was needed to help write these functions. 
+
 ## Other Information
 The 'main' script in 'General Company Info' folder is **'Company_Info_Analysis.py'**. This calls the following scripts (which can be run individually): **'Overview.py'**, **'People'**, **'Charges_Transactions.py'**, and **'Insolvency'**. The following table outlines what information each script obtains.
 

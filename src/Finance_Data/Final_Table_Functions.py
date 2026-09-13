@@ -53,7 +53,7 @@ def update_period_mapping(df):
     filter_check = df.copy()
     
     property_plant_check = filter_check[filter_check['name'].str.contains('PropertyPlantEquipment')]
-    if any(df['period_date_parsed'].isna() ==True) == True:
+    if any(property_plant_check['period_date_parsed'].isna() ==True) == True:
         df['period_mapped'] = np.where((df['name'].str.contains('PropertyPlantEquipment')) & 
                                             (df['context'].str.contains('company-BFwd-instant')), 
                                             None, df['period_mapped'])
@@ -168,8 +168,6 @@ def extract_equity_type(ctx, name_col, format_col):
 
     if 'equity' in name_col:
 
-        # Special rule discovered in the data:
-        # NULL format + Set2/3/4 => ShareCapital
         if pd.isna(format_col) and any(s in ctx for s in ['set2', 'set3', 'set4']):
             return 'ShareCapital'
 
@@ -271,24 +269,6 @@ def extract_creditor_type(ctx, name_col):
             return result
 
     return None
-
-
-def parse_date_safe(x):
-    try:
-        return pd.to_datetime(x, dayfirst=True, errors='coerce')
-    except:
-        return pd.NaT
-
-
-
-def filter_group(g):
-    if len(g) == 1:
-        return g
-
-    be = g[~g["context"].str.contains(r"_|START|END", regex = True)]
-    return be if not be.empty else g.head(1)
-
-
 
 def period_mapping():
     current = ['FY1', 'CY', 'B', 'C', 'B_', 'c222', 'c224', 'c604', 'c570', 'c645', 'cur', 'I0', 'I6', 'I8', 'D0', 'TMinusZero', 
@@ -423,35 +403,23 @@ def reformat_html_df(df):
 
 def add_concept(name, current, previous):
     """
-    Add a financial concept to the output rows list.
-
-    Creates up to two records:
-    - Current period value
-    - Previous period value
+    Add a financial concept to the output rows list, creating up to two records - Current period value
+    and Previous period value.  Values are converted to strings and commas are removed to
+    ensure consistency with the rest of the extraction pipeline.
 
     Parameters
     ----------
-    name : str
-        Standardised concept name, e.g. 'Debtors'.
-
-    current : str | int | float | None
-        Current-period value.
-
-    previous : str | int | float | None
-        Previous-period value.
-
-    Notes
-    -----
-    Values are converted to strings and commas are removed to
-    ensure consistency with the rest of the extraction pipeline.
+        name (str): Standardised concept name, e.g. 'Debtors'.
+        current (str | int | float | None): Current-period value.
+        previous: (str | int | float | None):  Previous-period value.
 
     Example
     -------
-    add_concept("Debtors", "17,361", "2,425")
+        add_concept("Debtors", "17,361", "2,425")
 
-    Produces:
-        Debtors | 17361 | Current
-        Debtors | 2425  | Previous
+        Returns:
+            Debtors | 17361 | Current
+            Debtors | 2425  | Previous
     """
 
     if current is not None:
@@ -476,10 +444,8 @@ def add_concept(name, current, previous):
 def extract_numeric_values(lines, start_idx, required=2):
 
     """
-    Extract financial values from rendered HTML text.
-
-    Starting from a specified position in the document,
-    scans forward and returns the next financial values found.
+    Extracts financial values from rendered HTML text. Starts from a specified position in the document,
+    and scans forward, returning the next financial values found.
 
     The function ignores note references such as:
 
@@ -492,19 +458,13 @@ def extract_numeric_values(lines, start_idx, required=2):
 
     Parameters
     ----------
-    lines : list[str]
-        List of text rows extracted from the rendered HTML.
-
-    start_idx : int
-        Position from which to begin searching.
-
-    required : int, default 2
-        Number of financial values to return.
+        lines (list[str]): List of text rows extracted from the rendered HTML.
+        start_idx (int): Position from which to begin searching.
+        required (int): Number of financial values to return. Default = 2
 
     Returns
     -------
-    list[str]
-        Financial values with commas removed.
+        list[str]: Financial values with commas removed.
 
     Example
     -------
@@ -572,8 +532,7 @@ def extract_rendered_financials_mapped(rendered_df):
 
     Parameters
     ----------
-    rendered_df : pandas.DataFrame
-        DataFrame produced by parse_html(), containing a column called
+    rendered_df (pandas.DataFrame) DataFrame produced by parse_html(), containing a column called
         'row_text' with the rendered financial statement text.
 
     Returns
@@ -634,10 +593,6 @@ def extract_rendered_financials_mapped(rendered_df):
             break
 
         statement_lines.append(line)
-
-    # ---------------------------------
-    # Main balance sheet extraction
-    # ---------------------------------
 
     for i, line in enumerate(statement_lines):
 
@@ -746,9 +701,6 @@ def extract_rendered_financials_mapped(rendered_df):
                 current_row, previous_row = add_concept("Equity_RevaluationReserve", nums[0], nums[1])
                 rows.append(current_row)
                 rows.append(previous_row)
-    # ---------------------------------
-    # Metadata
-    # ---------------------------------
 
     text_blob = " ".join(lines)
 
