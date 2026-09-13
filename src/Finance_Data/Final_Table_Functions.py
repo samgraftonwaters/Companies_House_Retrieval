@@ -11,6 +11,22 @@ Note, these functions were created with the help of MS CoPilot
 
 def map_period(df, mask_col = 'period_mapped', group_col = 'New_Name', name_col = 'period_date_parsed', rank_col = 'period_rank'):
 
+    """
+    Map periods to Current and Previous labels.
+
+    Parameters:
+    -----------
+        df (DataFrame): finance datatable
+        mask_col (str): Column containing the period labels.
+        group_col (str): Column used to group periods.
+        name_col (str): Column containing parsed period dates.
+        rank_col (str): Column used to store the period rank.
+
+    Returns:
+    --------
+        DataFrame with missing period labels mapped to Current or Previous.
+    """
+
     mask = df[mask_col].isna()
     
     df.loc[mask, rank_col] = (
@@ -26,6 +42,19 @@ def map_period(df, mask_col = 'period_mapped', group_col = 'New_Name', name_col 
 
 
 def equity_creditor_debitors_checks(df):
+
+    """
+    Apply checks to equity, creditor, and debtor classifications to the filter the datatables to obtain
+    useful information.
+
+    Parameters
+    ----------
+        df (DataFrame): finance datatable
+
+    Returns:
+    --------
+        DataFrame with updated creditor, equity, and debtor classifications.
+    """
 
     filter_check = df.copy()
     
@@ -50,6 +79,18 @@ def equity_creditor_debitors_checks(df):
 
 def update_period_mapping(df):
 
+    """
+    Update period mappings for fixed asset entries.
+
+    Parameters:
+    -----------
+        df (DataFrame): finance datatable
+
+    Returns
+    --------
+        DataFrame with affected period mappings reset where required.
+    """
+
     filter_check = df.copy()
     
     property_plant_check = filter_check[filter_check['name'].str.contains('PropertyPlantEquipment')]
@@ -65,6 +106,20 @@ def update_period_mapping(df):
 
 
 def remove_segments(df):
+
+    """
+    To filter out certain information, certain column values will set the 'Segment' column to 'REMOVE'. 
+    These are then filtered (removed) to remove those rows from the final table. 
+
+    Parameters:
+    -----------
+        df (DataFrame): finance datatable
+
+    Returns:
+    --------
+        DataFrame with unwanted segment entries removed.
+    """
+
     df = df.copy()
     
     df = df[df['segment'] != 'bfwd']
@@ -82,9 +137,46 @@ def remove_segments(df):
 
     return(df)
 
+def normalise_dates(data):
+
+    """
+    Normalises all dates to be the same type
+
+    Parameters:
+    ----------
+        data: contains the dates to be normalised
+
+    Returns:
+        Normalised date value   
+    """
+    
+    s = data.astype(str).str.strip()
+
+    parsed = pd.Series(index=s.index, dtype='datetime64[ns]')
+
+    formats = ['%d-%b-%y', '%d-%b-%Y', '%d-%B-%y', '%d-%B-%Y', '%Y-%m-%d', '%d/%m/%Y', '%d-%m-%Y', '%d.%m.%Y', '%d/%m/%y', '%d-%m-%y', '%d.%m.%y', 
+               '%d.%b.%y', '%d.%b.%Y', '%d.%B.%y', '%d.%B.%Y', '%y-%b-%d', '%Y %B %d', '%Y %b %d', '%d %B %Y', '%d %B %y', '%d %b %Y', '%d %b %y']
+
+    for fmt in formats:
+        mask = parsed.isna()
+        parsed.loc[mask] = pd.to_datetime(s.loc[mask], format=fmt, errors='coerce')
+
+    return parsed.dt.strftime('%d/%m/%Y')
 
 
 def formatting_with_masks(df):
+
+    """
+    Apply formatting rules to creditors, equity, and date fields.
+
+    Parameters:
+    ----------
+        df (DataFrame): finance datatable
+
+    Returns:
+    --------
+        DataFrame with formatted metric names and normalised date values.
+    """
 
     mask_creditors = df['New_Name'] == 'Creditors'
 
@@ -104,6 +196,18 @@ def formatting_with_masks(df):
 
 
 def parse_context(ctx):
+
+    """
+    Obtains different types of information based on the content of the context column
+    
+    Parameters:
+    -----------
+        ctx (series): the context column in the financial datatable
+
+    Returns:
+    --------
+        Series containing different types of information.
+    """
     ctx = str(ctx)
     
     number_tokens = ['c222', 'c223', 'c224', 'c225', 'c273', 'c279', 'c604', 'c603', 'c587', 'c570', 'c571', 'c645', 'c874', 'c798', 
@@ -331,22 +435,20 @@ def extract_rendered_financials(rendered_df):
     return pd.DataFrame(rows)
 
 
-def normalise_dates(series):
-    s = series.astype(str).str.strip()
-
-    parsed = pd.Series(index=s.index, dtype='datetime64[ns]')
-
-    formats = ['%d-%b-%y', '%d-%b-%Y', '%d-%B-%y', '%d-%B-%Y', '%Y-%m-%d', '%d/%m/%Y', '%d-%m-%Y', '%d.%m.%Y', '%d/%m/%y', '%d-%m-%y', '%d.%m.%y', 
-               '%d.%b.%y', '%d.%b.%Y', '%d.%B.%y', '%d.%B.%Y', '%y-%b-%d', '%Y %B %d', '%Y %b %d', '%d %B %Y', '%d %B %y', '%d %b %Y', '%d %b %y']
-
-    for fmt in formats:
-        mask = parsed.isna()
-        parsed.loc[mask] = pd.to_datetime(s.loc[mask], format=fmt, errors='coerce')
-
-    return parsed.dt.strftime('%d/%m/%Y')
-
-
 def switch_to_html_method(html, df):
+
+    """
+    Uses the HTML method for extracting the financial data.
+
+    Parameters:
+    -----------
+        html (str): HTML URL
+        df (DataFrame): financial datatable
+
+    Returns:
+    --------
+        dataframe with the financial data collected from the HTML URL
+    """
 
     result_html = ED.parse_html(html)
 
@@ -371,6 +473,20 @@ def switch_to_html_method(html, df):
 
 
 def reformat_html_df(df):
+
+    """
+    Reformats the HTML obtained dataframe by resolving the current and previous values for Comany Number and 
+    number of employees.
+
+    Parameters:
+    -----------
+        df (DataFrame): Financial dataframe
+
+    Returns:
+    --------
+        Reformatted dataframe with updated Company House column and number of employees column
+    
+    """
 
     valid_employee_names = set(df.loc[df['Final_Name'].str.startswith('AverageNumberEmployeesDuringPeriod_')
         & df['Final_Name'].str.endswith('_Original'), 'Final_Name'].str.replace('_Original$', '', regex=True))
