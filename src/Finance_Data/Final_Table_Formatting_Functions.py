@@ -4,6 +4,21 @@ from datetime import datetime
 
 def updating_missing_columns(df):
 
+    """
+    In some cases, certain columns may be missing data, but they are either stored in another column with a different name 
+    to what is usually present, or other columns need to be summed to get the desired value. This function
+    accounts for these.
+
+    Parameters:
+    -----------
+        df (DataFrame): Financial dataframe
+
+    Returns:
+    --------
+        DataFrame with corrected and updated columns
+
+    """
+
     df = df.copy()
     time_period = ['Current', 'Previous']
 
@@ -36,6 +51,20 @@ def updating_missing_columns(df):
 
 def correct_number_employers(df):
 
+    """
+    In some cases, the number of employess at a Company is returns as a decimal. e.g. 0.45, this function converts
+    this value to an integer (e.g. 45). Alternatively, some employee numbers are in the millions, but the true value maybe 
+    in the 100s or 1000s. The function accounts for those as well
+
+    Parameters:
+    -----------
+        df (DataFrame): Financial dataframe
+    
+    Returns:
+    --------
+        DataFrame with the correct Company employee numbers
+    """
+
     df = df.copy()
     
     time_period = ['Current', 'Previous']
@@ -53,6 +82,23 @@ def correct_number_employers(df):
 
 
 def change_data_types(df, columns_to_change : list | str, to_type : str, date_first : str = None):
+
+    """
+    Changes the column to their correct type - e.g. date, int or float
+
+    Parameters:
+    -----------
+        df (DataFrame): Financial dataframe
+        columns_to_change (list | str): column names to change the type on. Columns added here must only be included
+                                        if they should all have the final type change
+        to_type (str): what type should the column(s) be changed to? Options: 'float', 'date' or 'int'
+        date_first (str): if date is the desired type, then this sets the 'day' or 'year' first depending on
+                            input. Default = None
+
+    Returns:
+    --------
+        Changes the types of specified columns in the datatable.
+    """
 
     columns_to_change = [col for col in columns_to_change if col in df.columns]
     
@@ -73,6 +119,20 @@ def change_data_types(df, columns_to_change : list | str, to_type : str, date_fi
 
 def update_columns_if_similar_values(df):
 
+    """
+    In some cases, data is saved in a column with a different name. This function takes this column and fills in 
+    the correct column with its information.
+
+    Parameters:
+    ----------
+        df (DataFrame): Financial dataframe
+    
+    Returns:
+    --------
+        DataFrame with all columns filled in correctly if there is data.
+    
+    """
+
     df[f'Equity_ShareCapital_Previous'] = np.where(df[f'Equity_ShareCapital_Previous'].isna() == True, 
                                                             df[f'Equity_ShareCapital_Current'], 
                                                             df[f'Equity_ShareCapital_Previous'])
@@ -86,6 +146,19 @@ def update_columns_if_similar_values(df):
 
 
 def reoreder_rename_cols(df):
+
+    """
+    Renames the columns and reorders them
+
+    Parameters:
+    ----------
+        df (DataFrame): Financial dataframe
+    
+    Returns:
+    --------
+        DataFrame with renamed and reordered columns
+    
+    """
 
     reorder_cols = ['UKCompaniesHouseRegisteredNumber_Current', 'Account_Date', 'Action_Date',  
                     'StartDateForPeriodCoveredByReport_Current', 'EndDateForPeriodCoveredByReport_Current', 'BalanceSheetDate_Current', 
@@ -111,6 +184,19 @@ def reoreder_rename_cols(df):
     return(df)
 
 def create_new_cols(df):
+
+    """
+    Creates new columns in the finance data table. 
+
+    Parameters:
+    -----------
+        df (DataFrame): datatable with the financial data.
+
+    Returns:
+    --------
+        dataframe with new columns for the financial data.
+
+    """
     df['Total Assets Current'] = (np.where(df['Fixed Assets Current'].isna() == False, df['Fixed Assets Current'], 0)
                                             + np.where(df['Current Assets Current'].isna() == False, df['Current Assets Current'], 0))
     df['Total Assets Previous'] = (np.where(df['Fixed Assets Previous'] .isna() == False, df['Fixed Assets Previous'], 0)
@@ -125,6 +211,20 @@ def create_new_cols(df):
 
 
 def final_table_formatting(dataframe, save_file = False):
+
+    """
+    Updates and reformats the financial data table to get the final table to be saved.
+
+    Parameters:
+    -----------
+        dataframe (DataFrame): the datatable with the financial data ready to be reformatted
+        save_file (bool): determines whther the table should be saved. Default = False
+    
+    Returns:
+    --------
+        Final formatted financial data table. 
+    
+    """
 
     int_cols = ['FixedAssets_Current', 'FixedAssets_Previous',
                 'CurrentAssets_Current', 'CurrentAssets_Previous', 'CashBankOnHand_Current', 'CashBankOnHand_Previous', 'Creditors_Within1Y_Current',
