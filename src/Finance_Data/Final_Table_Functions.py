@@ -267,6 +267,20 @@ def parse_context(ctx):
 
 
 def extract_equity_type(ctx, name_col, format_col):
+
+    """
+    Obtains different types of equity based on the content of the context column
+    
+    Parameters:
+    -----------
+        ctx (series): the context column in the financial datatable
+        name_col (str): column containing the type of financial infomation. e.g. Current Asset or Total Equity
+        format_col (str): the name of the format column
+
+    Returns:
+    --------
+        Type of equity
+    """
     ctx = str(ctx).lower()
     name_col = str(name_col).lower()
 
@@ -328,6 +342,19 @@ def extract_equity_type(ctx, name_col, format_col):
 
 
 def extract_creditor_type(ctx, name_col):
+    """
+    Obtains different types of creditor data based on the content of the context column
+    
+    Parameters:
+    -----------
+        ctx (series): the context column in the financial datatable
+        name_col (str): column containing the type of financial infomation. e.g. Current Asset or Total Equity
+
+    Returns:
+    --------
+        Returns whether the creditor is due within 1 year or after 1 year. 
+    """
+    
     ctx = str(ctx).lower()
     name_col = str(name_col).lower()
 
@@ -359,12 +386,9 @@ def extract_creditor_type(ctx, name_col):
         )
     ]
 
-    # Handle moving Set values
     if 'creditors' in name_col:
         if 'set1' in ctx:
             return 'Within1Y'
-        # if 'CreditorsHypercube' and 'set2' in ctx:
-        #     return 'Within1Y'
         if 'set2' in ctx:
             return 'After1Y'
 
@@ -375,6 +399,11 @@ def extract_creditor_type(ctx, name_col):
     return None
 
 def period_mapping():
+
+    """
+    Creates a column to include either 'Current' or 'Previous' depending on the data in the context column
+    """
+
     current = ['FY1', 'CY', 'B', 'C', 'B_', 'c222', 'c224', 'c604', 'c570', 'c645', 'cur', 'I0', 'I6', 'I8', 'D0', 'TMinusZero', 
                'Current', 'current', 'company-BFwd-instant', 'CURRENT', 'CUR', 'CurrYearEnd', 'CompYearEnd', 'Cur', 'c3', 'c349', 'c366', 'c424', 
                'c1', 'c273', 'c798', 'c831', 'c798', 'c874', 'b_dc_dd', 'b_ee_em', 'dim003', 'dim005', 'eFY1', 'sFY1', 'yFY1', 'I3', 'yearend_dim003',
@@ -389,19 +418,27 @@ def period_mapping():
     mapping.update({k: 'Previous' for k in previous})
     return(mapping)
 
-
-
 def account_for_duplicate_names(df):
+
+    """
+    Removes rows with duplicate names in the data table
+    
+    Parameters:
+    ----------
+        df (DataFrame): finance datatable
+
+    Returns:
+    --------
+        DataFrame with removed duplicates based on Name column
+    """
+
     current_contexts = {"I0", "I4"}
     previous_contexts = {"I3", "I5"}
-    
-    # Create a temporary base name just for identifying duplicates
+
     base_name = df["Final_Name"].str.replace(r"_(Current|Previous)$", "", regex=True)
     
-    # Only rows belonging to duplicated names
     dup_mask = base_name.duplicated(keep=False)
     
-    # Correct only duplicate groups
     df.loc[dup_mask & df["context"].isin(current_contexts), "Final_Name"] = (df.loc[dup_mask & df["context"].isin(current_contexts), "Final_Name"]
         .str.replace(r"_(Current|Previous)$", "_Current", regex=True))
     
@@ -409,31 +446,6 @@ def account_for_duplicate_names(df):
         .str.replace(r"_(Current|Previous)$", "_Previous", regex=True))
 
     return(df)
-
-
-def extract_rendered_financials(rendered_df):
-
-    lines = rendered_df["row_text"].dropna().astype(str).str.strip().tolist()
-
-    rows = []
-
-    current_heading = None
-
-    finance_info = ["Fixed assets", "Current assets", "Creditors: amounts falling due within one year", "Net current assets", 
-                    "Total assets less current liabilities", "Net assets", "Capital and reserves"]
-
-    for line in lines:
-
-        if line in finance_info:
-            current_heading = line
-            continue
-
-        if current_heading:
-
-            rows.append({"New_Name": current_heading, "value": line, "context": "rendered"})
-
-    return pd.DataFrame(rows)
-
 
 def switch_to_html_method(html, df):
 
@@ -469,8 +481,6 @@ def switch_to_html_method(html, df):
     df = df.drop_duplicates(subset='Final_Name').reset_index(drop = True)
 
     return(df)
-
-
 
 def reformat_html_df(df):
 
@@ -614,8 +624,6 @@ def extract_numeric_values(lines, start_idx, required=2):
         j += 1
 
     return nums
-
-
 
 def extract_rendered_financials_mapped(rendered_df):
     """
