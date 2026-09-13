@@ -1,0 +1,157 @@
+import pandas as pd
+from datetime import datetime
+
+from General_Company_Info import Call_API_Functions as CAF
+
+import configparser
+import ast
+config = configparser.ConfigParser()
+config.read("src/config.ini")
+
+def get_charges_data(companies : list, url : str, api_key : str, save_file : bool = False):
+
+    """
+    Obtain the information related to any charges
+    
+    Parameters:
+    -----------
+        companies (list|series): list or dataframe column containing company house numbers
+        url (str): main url path for companies house website
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe containing the data related to charges for the company
+    """
+
+    charges = CAF.pulling_charge_data(company_house_numbers = companies, url = url,  api_key = api_key)
+
+    charges['Charge Number'] = charges['Charge Number'].astype(int)
+
+    if save_file == True:
+        charges.to_csv(f'src/General_Company_Info/saved_tables/Company_Charges_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+    return(charges)
+
+def get_transactions_data(charges, api_key : str, save_file : bool = False):
+
+    """
+    Obtain the information related to any transactions
+    
+    Parameters:
+    -----------
+        charges (dataframe): data table containing the charges infomation
+        api_key (str): companies house user unique API key from https://developer.company-information.service.gov.uk/
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe containing the data related to transactions for the company
+    """
+
+    transactions = CAF.pulling_transactions_data(charges_df = charges, api_key = api_key)
+
+    if save_file == True:
+        transactions.to_csv(f'src/General_Company_Info/saved_tables/Company_Transactions_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+    return(transactions)
+
+def merge_charges_transactions(charges, transactions, save_file = False):
+
+    """
+    Merges the charges and transactions datatables
+    
+    Parameters:
+    -----------
+        charges (dataframe): data table containing the charges infomation
+        tranactions (dataframe): data table containing the transactions infomation
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe with the combined charges and transactions data
+    """
+
+    charges = charges.drop(['Transactions', 'Persons Entitled', 'Classification Type', 'Particulars Type'], axis = 1)
+    transactions = transactions.drop(['Company Number'], axis = 1)
+    
+    charges_transactions = pd.merge(charges, transactions, on = 'Charge Code', how = 'left')
+    charges_transactions.head(2)
+
+    if save_file == True:
+        charges_transactions.to_csv(f'src/General_Company_Info/saved_tables/Company_Charges_Transactions_Table_{datetime.now().strftime('%d-%b-%Y')}.csv', sep = ',', index = False)
+
+    return(charges_transactions)
+
+
+def get_number_charges(charges, save_file = False):
+
+    """
+    Counts the number of different types of charges for each Company, and calculates the proportions
+    
+    Parameters:
+    -----------
+        charges (dataframe): data table containing the charges infomation
+        save_file (bool): determines whether the final table can be saved to a csv file. Default = False
+    
+    Returns:
+    --------
+        DataFrame: dataframe with the count and proportions of each type of charge for each Company
+    
+    """
+
+    number_charges = charges.copy()
+    number_charges = number_charges.drop(['Charge Code', 'Delivered On', 'Created On', 'Persons Entitled', 'Transactions', 'Classification Type', 
+                                      'Particulars Type', 'Brief Description', 'Contains Floating Charge?',
+                                      'Contains Fixed Charge?', 'Floating Charge Covers All?', 'Contains Negative Pledge?'], axis = 1).reset_index(drop = True)
+
+    max_number_charges = number_charges.groupby(['Company Number'])['Charge Number'].max().reset_index(name = 'Total Number Charges')
+    number_charges = pd.merge(number_charges, max_number_charges, on = 'Company Number', how = 'left')
+
+
+    count_outstanding_charges = (number_charges.groupby(['Company Number', 'Status']).size().unstack(fill_value=0)
+                                .reindex(columns=['outstanding', 'fully-satisfied', 'part-satisfied', 'Other (charges)'], fill_value=0).reset_index())
+
+    count_outstanding_charges = count_outstanding_charges.rename(columns = {'outstanding' : 'Outstanding', 'fully-satisfied' : 'Fully Satisfied', 'part-satisfied': 'Part Satisfied'})
+
+    number_charges = pd.merge(number_charges, count_outstanding_charges, on = 'Company Number', how = 'left')
+
+    class_type = (number_charges.groupby(['Company Number', 'Classification Description']).size().unstack(fill_value=0)
+                                .reindex(columns=['A registered charge', 'Legal charge', 'Debenture', 'Other (types)'], fill_value=0).reset_index())
+    
+    number_charges = pd.merge(number_charges, class_type, on = 'Company Number', how = 'left')
+
+    number_charges = number_charges.drop(['Charge Number', 'Status', 'Classification Description'], axis = 1).drop_duplicates(subset = 'Company Number').reset_index(drop = True)
+
+    number_charges['Outstanding Proportion'] = number_charges['Outstanding']/number_charges['Total Number Charges']
+    number_charges['Fully-satisfied Proportion'] = number_charges['Fully Satisfied']/number_charges['Total Number Charges']
+    number_charges['Part-satisfied Proportion'] = number_charges['Part Satisfied']/number_charges['Total Number Charges']
+    number_charges['Other (charges) Proportion'] = number_charges['Other (charges)']/number_charges['Total Number Charges']
+
+    number_charges['Registered Charge Proportion'] = number_charges['A registered charge']/number_charges['Total Number Charges']
+    number_charges['Legal Charge Proportion'] = number_charges['Legal charge']/number_charges['Total Number Charges']
+    number_charges['Debenture Proportion'] = number_charges['Debenture']/number_charges['Total Number Charges']
+    number_charges['Other (types) Proportion'] = number_charges['Other (types)']/number_charges['Total Number Charges']
+
+    if save_file == True:
+        number_charges.to_csv(f'src/General_Company_Info/saved_tables/Company_Number_Prop_Charges_{datetime.now().strftime('%d-%b-%Y')}.csv',  sep = ',', index = False)
+
+    print('Charges & Transactions Analysis Completed')
+    return(number_charges)
+
+if __name__ == '__main__':
+
+    if config['INPUT']['input_filename'] != 'None':
+        data = pd.read_csv(f'src/input_data_tables/{config['INPUT']['input_filename']}.csv')
+        companies_number_col_name = config['INPUT']['column_name_company_number']
+        companies = data[companies_number_col_name].astype("string")
+
+    else:
+        companies = ast.literal_eval(config['INPUT']['companies_list'])
+    url = config['LINKS']['url']
+    api_key = config['LINKS']['api_key']
+    save_file = config.getboolean('SAVEFILES', 'save_file')
+
+    charges = get_charges_data(companies, url, api_key, save_file = True)
+    transactions = get_transactions_data(charges = charges, api_key = api_key, save_file = True)
+    charges_transactions_merged = merge_charges_transactions(charges, transactions, save_file = True)
+    number_of_charges = get_number_charges(charges, save_file = True)
